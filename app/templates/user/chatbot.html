@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Chatbot - DeepSeek</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <style>
+        :root {
+            --sidebar: #2C7A7B;
+            --user-bubble: #DCF8C6;
+            --bot-bubble: #FFFFFF;
+            --primary: #2C7A7B;
+            --high-priority: #FECACA;
+            --medium-priority: #FEF3C7;
+            --low-priority: #D1FAE5;
+        }
+        .logo-container { display: flex; justify-content: center; align-items: center; padding: 0.5rem; animation: fadeIn 1.5s ease-in-out; }
+        .logo { width: 150px; height: auto; transition: transform 0.3s ease-in-out; }
+        .logo:hover { transform: scale(1.1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes wave { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        @keyframes messageEnter { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .message-entry { animation: messageEnter 0.4s ease-out; }
+        .floating { animation: float 3s ease-in-out infinite; }
+        .voice-wave::before { content: ''; position: absolute; width: 100%; height: 100%; border: 2px solid var(--primary); border-radius: 50%; animation: wave 1.5s linear infinite; }
+        .pulse-glow { box-shadow: 0 0 0 0 rgba(44, 122, 123, 0.4); animation: pulse-glow 2s infinite; }
+        @keyframes pulse-glow { 100% { box-shadow: 0 0 0 15px rgba(44, 122, 123, 0); } }
+        .send-btn:hover .paper-plane { transform: rotate(45deg) translateX(5px); }
+    </style>
+</head>
+<body class="bg-gray-100" x-data="chatbot">
+    <div class="fixed left-0 top-0 h-full w-64 bg-[var(--sidebar)] text-white shadow-xl">
+        <div class="logo-container border-b border-teal-600">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU logo" class="logo">
+        </div>
+        <nav class="p-4 space-y-2">
+            <a href="{{ url_for('main.user_dashboard') }}" class="block p-3 hover:bg-teal-600 rounded">📊 Dashboard</a>
+            <a href="{{ url_for('main.profile') }}" class="block p-3 hover:bg-teal-600 rounded">👤 Profile</a>
+            <a href="{{ url_for('main.chatbot') }}" class="block p-3 bg-teal-800 rounded">💬 Chatbot</a>
+            <a href="{{ url_for('main.complaint_status') }}" class="block p-3 hover:bg-teal-600 rounded">📝 Complaint Status</a>
+        </nav>
+        <div class="absolute bottom-0 w-full">
+            <a href="{{ url_for('main.logout') }}" class="block p-3 bg-red-500 text-white text-center hover:bg-red-600">⮿ Logout</a>
+        </div>
+    </div>
+
+    <main class="ml-64 p-8 min-h-screen">
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md h-[80vh] flex flex-col">
+            <div class="p-4 border-b">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold">Emotion-Aware Support</h2>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-400 rounded-full floating"></div>
+                        <span class="text-gray-500 text-sm" x-text="currentTime"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="messages">
+                <template x-for="message in messages" :key="message.id">
+                    <div class="flex message-entry" :class="message.sender === 'user' ? 'justify-end' : 'justify-start'">
+                        <div class="max-w-[70%] p-4 rounded-2xl shadow-sm border relative"
+                             :class="{
+                                 'bg-[var(--user-bubble)] ml-auto': message.sender === 'user',
+                                 'bg-[var(--bot-bubble)]': message.sender === 'bot'
+                             }">
+                            <template x-if="message.priority">
+                                <div class="absolute -top-3 -right-3">
+                                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-sm"
+                                         :class="{
+                                             'bg-red-500 text-white': message.priority === 'high',
+                                             'bg-yellow-500 text-white': message.priority === 'medium',
+                                             'bg-green-500 text-white': message.priority === 'low'
+                                         }">
+                                        <span x-text="message.priority[0].toUpperCase()"></span>
+                                    </div>
+                                </div>
+                            </template>
+                            <p class="text-gray-700" x-text="message.text"></p>
+                            <span class="text-xs text-gray-400 mt-2 block" x-text="message.time"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="p-4 border-t">
+                <div class="flex gap-4 items-center">
+                    <button @click="toggleRecording" class="w-12 h-12 flex items-center justify-center rounded-full transition-all relative"
+                            :class="{
+                                'bg-red-500 pulse-glow': isRecording,
+                                'bg-[var(--primary)] hover:bg-teal-600': !isRecording
+                            }">
+                        <svg class="w-6 h-6 text-white transform transition-transform" :class="{ 'scale-110': isRecording }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </button>
+                    <div class="flex-1 relative">
+                        <input type="text" x-model="newMessage" @keyup.enter="sendText" placeholder="Type your message..."
+                               class="w-full p-4 border rounded-full pl-6 pr-20 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
+                        <button @click="sendText" class="absolute right-4 top-1/2 -translate-y-1/2 group" :disabled="!newMessage">
+                            <div class="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center hover:bg-teal-600">
+                                <svg class="paper-plane w-6 h-6 text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('chatbot', () => ({
+        messages: [],
+        newMessage: '',
+        isRecording: false,
+        mediaRecorder: null,
+        audioChunks: [],
+
+        get currentTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        },
+
+        init() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    this.mediaRecorder = new MediaRecorder(stream);
+                    this.mediaRecorder.ondataavailable = e => this.audioChunks.push(e.data);
+                    this.mediaRecorder.onstop = this.sendVoice;
+                })
+                .catch(error => {
+                    console.error('Microphone access error:', error);
+                });
+        },
+
+        sendText() {
+            const text = this.newMessage.trim();
+            if (!text) return;
+
+            const userMsg = {
+                id: Date.now(),
+                text,
+                sender: 'user',
+                time: this.currentTime
+            };
+            this.messages.push(userMsg);
+            this.newMessage = '';
+
+            fetch('/chatbot/text', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.reply) {
+                    this.messages.push({ id: Date.now(), text: data.reply, sender: 'bot', time: this.currentTime });
+                } else {
+                    this.messages.push({ id: Date.now(), text: '⚠️ No response from chatbot.', sender: 'bot', time: this.currentTime });
+                    console.error("Chatbot error:", data.error || "Unknown issue");
+                }
+                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+            })
+            .catch(err => {
+                this.messages.push({ id: Date.now(), text: '⚠️ Failed to reach server.', sender: 'bot', time: this.currentTime });
+                console.error("Fetch error:", err);
+            });
+
+        },
+
+        toggleRecording() {
+            if (this.isRecording) {
+                this.mediaRecorder.stop();
+                this.isRecording = false;
+            } else {
+                this.audioChunks = [];
+                this.mediaRecorder.start();
+                this.isRecording = true;
+            }
+        },
+
+        sendVoice() {
+            const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append('audio', blob);
+
+            fetch('/chatbot/voice', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    this.messages.push({
+                        id: Date.now(),
+                        text: '⚠️ Voice processing failed: ' + data.error,
+                        sender: 'bot',
+                        time: this.currentTime
+                    });
+                } else {
+                    this.messages.push({
+                        id: Date.now(),
+                        text: data.transcript + ' (emotion: ' + data.emotion + ')',
+                        sender: 'user',
+                        time: this.currentTime,
+                        priority: data.priority
+                    });
+
+                    this.messages.push({
+                        id: Date.now(),
+                        text: data.reply,
+                        sender: 'bot',
+                        time: this.currentTime
+                    });
+                }
+                this.scrollToBottom();
+            })
+            .catch(error => {
+                console.error("Voice API error:", error);
+                this.messages.push({
+                    id: Date.now(),
+                    text: '⚠️ Could not process voice input.',
+                    sender: 'bot',
+                    time: this.currentTime
+                });
+                this.scrollToBottom();
+            });
+        },
+
+        scrollToBottom() {
+            this.$nextTick(() => {
+                this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+            });
+        }
+    }));
+});
+</script>
+</body>
+</html>

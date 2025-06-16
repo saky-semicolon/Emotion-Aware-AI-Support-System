@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Sidebar -->
+  <div class="fixed left-0 top-0 h-full w-64 bg-teal-700 text-white shadow-xl">
+    <div class="p-4 text-center border-b border-teal-600">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU Logo" class="w-24 mx-auto">
+    </div>
+    <nav class="p-4 space-y-2">
+      <a href="{{ url_for('main.user_dashboard') }}" class="block p-3 hover:bg-teal-600 rounded">📊 Dashboard</a>
+      <a href="{{ url_for('main.profile') }}" class="block p-3 bg-teal-800 rounded">👤 Profile</a>
+      <a href="{{ url_for('main.chatbot') }}" class="block p-3 hover:bg-teal-600 rounded">💬 Chatbot</a>
+      <a href="{{ url_for('main.complaint_status') }}" class="block p-3 hover:bg-teal-600 rounded">📝 Complaint Status</a>
+    </nav>
+    <div class="absolute bottom-0 w-full">
+      <a href="{{ url_for('main.logout') }}" class="block p-3 bg-red-500 text-white text-center hover:bg-red-600">⮿ Logout</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded shadow">
+      <h1 class="text-3xl font-semibold mb-8 text-teal-800">Student Profile</h1>
+
+      <!-- Profile Picture Section -->
+      <div class="flex items-center gap-6 mb-8">
+
+        <div>
+          <h2 class="text-xl font-medium text-gray-800">{{ profile.full_name }}</h2>
+          <p class="text-gray-600">{{ profile.user.email }}</p>
+        </div>
+      </div>
+
+      <!-- User Info Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-gray-700 mb-2">Full Name</label>
+          <input type="text" value="{{ profile.full_name }}" readonly class="w-full p-3 border rounded-lg bg-gray-100">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 mb-2">Student ID</label>
+          <input type="text" value="{{ profile.id_number }}" readonly class="w-full p-3 border rounded-lg bg-gray-100">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 mb-2">Department</label>
+          <input type="text" value="{{ profile.department.dept_name }}" readonly class="w-full p-3 border rounded-lg bg-gray-100">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 mb-2">Academic Year</label>
+          <input type="text" value="{{ profile.academic_year }}" readonly class="w-full p-3 border rounded-lg bg-gray-100">
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

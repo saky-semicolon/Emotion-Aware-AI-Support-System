@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alerts - DeepSeek</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <style>
+    :root {
+      --sidebar: #2C7A7B;
+      --high-priority: #FECACA;
+      --medium-priority: #FEF3C7;
+      --low-priority: #D1FAE5;
+    }
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .alert-entry { animation: slideIn 0.3s ease-out; }
+    .priority-dot {
+      width: 10px;
+      height: 10px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .logo-container {
+      display: flex; justify-content: center; align-items: center;
+      padding: 0.5rem; animation: fadeIn 1.5s ease-in-out;
+    }
+    .logo {
+      width: 150px; height: auto; transition: transform 0.3s ease-in-out;
+    }
+    .logo:hover { transform: scale(1.1); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50" x-data="alertsApp">
+  <!-- Sidebar -->
+  <div class="fixed left-0 top-0 h-full w-64 bg-[var(--sidebar)] text-white shadow-xl">
+    <div class="logo-container border-b border-teal-600">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU logo" class="logo">
+    </div>
+    <nav class="p-4 space-y-2">
+      <a href="{{ url_for('main.user_dashboard') }}" class="block p-3 rounded-lg hover:bg-teal-600">📊 Dashboard</a>
+      <a href="{{ url_for('main.profile') }}" class="block p-3 rounded-lg hover:bg-teal-600">👤 Profile</a>
+      <a href="{{ url_for('main.chatbot') }}" class="block p-3 rounded-lg hover:bg-teal-600">💬 Chatbot</a>
+      <a href="{{ url_for('main.complaint_status') }}" class="block p-3 rounded-lg hover:bg-teal-600">📝 Complaint Status</a>
+      <a href="{{ url_for('main.alerts') }}" class="block p-3 rounded-lg bg-teal-700">🔔 Alerts & Notifications</a>
+    </nav>
+    <div class="absolute bottom-0 w-full">
+      <button onclick="window.location.href='{{ url_for('main.logout') }}'" class="block p-3 bg-red-500 text-white text-center hover:bg-red-600">⮿ Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8 min-h-screen">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-gray-700">Notifications</h1>
+        <button @click="markAllAsRead()" class="bg-[var(--sidebar)] text-white px-4 py-2 rounded-lg hover:bg-teal-600">Mark All as Read</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex gap-2 mb-6">
+        <template x-for="f in filters" :key="f.value">
+          <button @click="selectedFilter = f.value"
+                  :class="selectedFilter === f.value ? 'bg-[var(--sidebar)] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                  class="px-4 py-2 rounded-full text-sm transition">
+            <span x-text="f.label"></span>
+            <span x-show="f.count > 0" class="ml-2 px-2 py-1 rounded-full bg-white/20 text-xs" x-text="f.count"></span>
+          </button>
+        </template>
+      </div>
+
+      <!-- Alerts List -->
+      <div class="bg-white rounded-xl shadow-md">
+        <template x-for="alert in filteredAlerts" :key="alert.id">
+          <div @click="toggleRead(alert.id)"
+               class="p-6 border-b last:border-0 cursor-pointer transition hover:bg-gray-50 alert-entry"
+               :class="{ 'bg-gray-50': alert.read }">
+            <div class="flex items-start gap-4">
+              <div class="relative mt-1">
+                <div class="priority-dot rounded-full"
+                     :class="{
+                       'bg-red-500': alert.priority === 'high',
+                       'bg-yellow-500': alert.priority === 'medium',
+                       'bg-green-500': alert.priority === 'low'
+                     }"></div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-1">
+                  <h3 class="font-semibold text-gray-700" x-text="alert.title"></h3>
+                  <span class="text-xs text-gray-400" x-text="alert.time"></span>
+                </div>
+                <p class="text-gray-600" x-text="alert.message"></p>
+                <div class="mt-3 flex gap-2">
+                  <span class="text-xs px-2 py-1 rounded-full"
+                        :class="{
+                          'bg-red-100 text-red-800': alert.priority === 'high',
+                          'bg-yellow-100 text-yellow-800': alert.priority === 'medium',
+                          'bg-green-100 text-green-800': alert.priority === 'low'
+                        }">
+                    Priority: <span x-text="alert.priority"></span>
+                  </span>
+                  <template x-if="!alert.read">
+                    <span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">New</span>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Empty State -->
+        <div x-show="filteredAlerts.length === 0" class="p-8 text-center text-gray-500">
+          <div class="text-4xl mb-4">📭</div>
+          <p>No notifications to display</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('alertsApp', () => ({
+        originalAlerts: {{ alerts | tojson }},
+        selectedFilter: 'all',
+        get alerts() {
+          return this.originalAlerts;
+        },
+        get filters() {
+          return [
+            { label: 'All', value: 'all', count: this.alerts.length },
+            { label: 'High', value: 'high', count: this.alerts.filter(a => a.priority === 'high').length },
+            { label: 'Medium', value: 'medium', count: this.alerts.filter(a => a.priority === 'medium').length },
+            { label: 'Low', value: 'low', count: this.alerts.filter(a => a.priority === 'low').length }
+          ];
+        },
+        get filteredAlerts() {
+          if (this.selectedFilter === 'all') return this.alerts;
+          return this.alerts.filter(a => a.priority === this.selectedFilter);
+        },
+        toggleRead(id) {
+          const alert = this.alerts.find(a => a.id === id);
+          if (alert) alert.read = !alert.read;
+        },
+        markAllAsRead() {
+          this.alerts.forEach(a => a.read = true);
+        }
+      }));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - AIU Emotion-Aware Chatbot</title>
+  <style>
+    :root {
+      --primary: #2C7A7B;
+      --primary-hover: #258080;
+      --secondary: #E6FFFA;
+      --text-dark: #1B4D3E;
+      --text-light: #666;
+      --input-border: #e0e0e0;
+      --input-focus: #2C7A7B;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: var(--secondary);
+      flex-direction: row;
+    }
+    .side-image {
+      flex: 1;
+      background: linear-gradient(rgba(44, 122, 123, 0.8), rgba(44, 122, 123, 0.8)),
+                  url('{{ side_image_url }}');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      animation: imageSlide 1s ease-out;
+    }
+    .side-content {
+      color: #fff;
+      text-align: center;
+    }
+    .side-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      animation: fadeIn 1s ease-out;
+    }
+    .side-content p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      animation: fadeIn 1s ease-out 0.2s;
+      animation-fill-mode: backwards;
+    }
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .login-box {
+      background: #fff;
+      padding: 3rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      animation: formSlide 0.8s ease-out;
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .login-header h1 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .login-header p {
+      color: var(--text-light);
+    }
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+    .form-group label {
+      display: block;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--text-dark);
+      background: #fafafa;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .form-group input:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 8px rgba(44, 122, 123, 0.15);
+      outline: none;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .login-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--text-light);
+      font-size: 0.97rem;
+    }
+    .register-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    @keyframes imageSlide {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes formSlide {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .side-image {
+        min-height: 200px;
+        padding: 3rem 1rem;
+      }
+      .login-container {
+        padding: 1.5rem 0.5rem;
+      }
+      .login-box {
+        padding: 2rem 1rem;
+        max-width: 95vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Side Image Section -->
+  <div class="side-image">
+    <div class="side-content">
+      <h2>AIU Emotion-Aware Chatbot</h2>
+      <p>Your personal assistant powered by AI to detect emotions and provide tailored support.</p>
+    </div>
+  </div>
+
+  <!-- Login Section -->
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <h1>Welcome Back</h1>
+        <p>Enter your credentials to continue</p>
+      </div>
+
+      <!-- Form submits to Flask backend -->
+      <form method="POST" action="{{ login_action }}">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+
+      <div class="register-link">
+        Don't have an account? <a href="{{ url_for('main.register') }}">Register</a><br>
+        Are you an Admin? <a href="{{ url_for('main.admin_login') }}">Admin Login</a>
+      </div>
+    </div>
+  </div>
+<script>
+    // Client-side validation
+    document.querySelector('form').addEventListener('submit', function (event) {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!email || !password) {
+            showPopup('Please fill in both email and password.');
+            event.preventDefault();
+            return;
+        }
+    });
+
+    // Function to display popup
+    function showPopup(message) {
+        let popup = document.createElement('div');
+        popup.textContent = message;
+        popup.style.position = 'fixed';
+        popup.style.top = '30px';
+        popup.style.left = '50%';
+        popup.style.transform = 'translateX(-50%)';
+        popup.style.background = '#fff';
+        popup.style.color = '#2C7A7B';
+        popup.style.padding = '1rem 2rem';
+        popup.style.border = '2px solid #2C7A7B';
+        popup.style.borderRadius = '8px';
+        popup.style.boxShadow = '0 4px 16px rgba(44,122,123,0.15)';
+        popup.style.zIndex = '9999';
+        popup.style.fontSize = '1rem';
+        popup.style.fontWeight = '500';
+        popup.style.textAlign = 'center';
+        document.body.appendChild(popup);
+        setTimeout(() => popup.remove(), 2500);
+    }
+
+    // Show popup if error is passed from Flask
+    {% if error %}
+        window.addEventListener('load', () => {
+            showPopup("Incorrect email or password.");
+        });
+    {% endif %}
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaints Management</title>
+    <link rel="stylesheet" href="../../static/Admin/style_admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="../../static/Admin/image/logo.png" alt="AIU Logo">
+            </div>
+            <ul class="nav">
+                <li><a href="{{ url_for('main.admin_dashboard') }}" class="active">Dashboard</a></li>
+                <li><a href="{{ url_for('main.admin_complaints') }}">Complaints Management</a></li>
+                <li><a href="{{ url_for('main.admin_alerts') }}">Alert and Notification</a></li>
+            </ul>
+            <button class="logout-btn" onclick="window.location.href='{{ url_for('main.logout') }}'">Logout</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Complaints Management</h1>
+            <div class="card complaints-table">
+                <h2>Complaints</h2>
+                <div class="table-controls">
+                    <select id="priorityFilter" onchange="filterComplaintsByPriority()">
+                        <option value="all">All Priorities</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <table id="complaintTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Emotion</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in complaints %}
+                        <tr data-complaint-id="{{ complaint.id }}">
+                            <td>{{ complaint.id }}</td>
+                            <td>{{ complaint.user }}</td>
+                            <td>
+                                <!-- Dropdown for status selection -->
+                                <select class="status-dropdown" onchange="updateStatus({{ complaint.id }}, this.value)">
+                                    <option value="open" {% if complaint.status == 'open' %}selected{% endif %}>Open</option>
+                                    <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                                    <option value="closed" {% if complaint.status == 'closed' %}selected{% endif %}>Closed</option>
+                                </select>
+                            </td>
+                            <td>{{ complaint.priority }}</td>
+                            <td>{{ complaint.emotion }}</td>
+                            <td>
+                                <button onclick="downloadReport({{ complaint.id }})">Download Report</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="../../static/Admin/JAVASCRIPT/logout.js"></script>
+    <script src="../../static/Admin/JAVASCRIPT/complaints_admin.js"></script>
+</body>
+</html>

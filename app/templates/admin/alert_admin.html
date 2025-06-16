@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts and Notifications</title>
+    <link rel="stylesheet" href="../../static/Admin/style_admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="../../static/Admin/image/logo.png" alt="AIU Logo">
+            </div>
+            <ul class="nav">
+                <li><a href="{{ url_for('main.admin_dashboard') }}" class="active">Dashboard</a></li>
+                <li><a href="{{ url_for('main.admin_complaints') }}">Complaints Management</a></li>
+                <li><a href="{{ url_for('main.admin_alerts') }}">Alert and Notification</a></li>
+            </ul>
+            <button class="logout-btn" onclick="window.location.href='{{ url_for('main.logout') }}'">Logout</button>
+            
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Alerts and Notifications</h1>
+            <div class="card notifications">
+                <h2>Real-Time Notifications</h2>
+                <ul id="notificationsList">
+                    {% for notification in notifications %}
+                    <li>
+                        <strong>{{ notification.title }}</strong>: {{ notification.message }}
+                        <span class="timestamp">{{ notification.timestamp }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="JAVASCRIPT/logout.js"></script>
+    <script src="../../static/Admin/JAVASCRIPT/alerts_admin.js"></script>
+</body>
+</html>

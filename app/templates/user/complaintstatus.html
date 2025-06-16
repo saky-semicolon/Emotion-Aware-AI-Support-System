@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complaint Status - DeepSeek</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <style>
+    :root {
+      --sidebar: #2C7A7B;
+      --primary: #2C7A7B;
+      --status-open: #FECACA;
+      --status-inprogress: #FEF3C7;
+      --status-closed: #D1FAE5;
+    }
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    .logo {
+      width: 150px;
+      height: auto;
+      transition: transform 0.3s ease-in-out;
+    }
+    .logo:hover {
+      transform: scale(1.1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-50" x-data="complaintStatus">
+  <!-- Sidebar -->
+  <div class="fixed left-0 top-0 h-full w-64 bg-[var(--sidebar)] text-white shadow-xl">
+    <div class="logo-container border-b border-teal-600">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU logo" class="logo">
+    </div>
+    <nav class="p-4 space-y-2">
+      <a href="{{ url_for('main.user_dashboard') }}" class="w-full text-left p-3 rounded-lg flex items-center hover:bg-teal-600">📊 Dashboard</a>
+      <a href="{{ url_for('main.profile') }}" class="w-full text-left p-3 rounded-lg flex items-center hover:bg-teal-600">👤 Profile</a>
+      <a href="{{ url_for('main.chatbot') }}" class="w-full text-left p-3 rounded-lg flex items-center hover:bg-teal-600">💬 Chatbot</a>
+      <a href="{{ url_for('main.complaint_status') }}" class="w-full text-left p-3 rounded-lg flex items-center bg-teal-700">📝 Complaint Status</a>
+    </nav>
+    <div class="absolute bottom-0 w-full">
+      <button onclick="window.location.href='{{ url_for('main.logout') }}'" class="w-full text-left p-3 rounded-lg flex items-center bg-red-500 text-white hover:bg-red-600">⮿ Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8 min-h-screen">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-700">Complaint Status</h1>
+        <input type="text" placeholder="Search complaints..." class="p-3 border rounded-lg w-1/3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" x-model="searchQuery">
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-[var(--primary)] text-white">
+            <tr>
+              <th class="p-4">Complaint ID</th>
+              <th class="p-4">Title</th>
+              <th class="p-4">Date</th>
+              <th class="p-4">Status</th>
+              <th class="p-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="complaint in filteredComplaints" :key="complaint.id">
+              <tr class="border-b hover:bg-gray-50">
+                <td class="p-4" x-text="complaint.id"></td>
+                <td class="p-4" x-text="complaint.title"></td>
+                <td class="p-4" x-text="complaint.date"></td>
+                <td class="p-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                        :class="{
+                          'bg-[var(--status-open)] text-red-800': complaint.status === 'open',
+                          'bg-[var(--status-inprogress)] text-yellow-800': complaint.status === 'in progress',
+                          'bg-[var(--status-closed)] text-green-800': complaint.status === 'resolved'
+                        }" 
+                        x-text="complaint.status.charAt(0).toUpperCase() + complaint.status.slice(1)">
+                  </span>
+                </td>
+                <td class="p-4">
+                  <button @click="viewDetails(complaint)" class="text-[var(--primary)] hover:underline">View</button>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+
+        <div x-show="filteredComplaints.length === 0" class="p-8 text-center text-gray-500">
+          <div class="text-4xl mb-4">📭</div>
+          <p>No complaints found</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('complaintStatus', () => ({
+        searchQuery: '',
+        complaints: {{ complaints | tojson }},
+        get filteredComplaints() {
+          return this.complaints.filter(c =>
+            c.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+            c.id.toString().includes(this.searchQuery)
+          );
+        },
+        viewDetails(complaint) {
+          alert(`Complaint Details:\n\nID: ${complaint.id}\nTitle: ${complaint.title}\nDate: ${complaint.date}\nStatus: ${complaint.status}`);
+        }
+      }));
+    });
+  </script>
+</body>
+</html>

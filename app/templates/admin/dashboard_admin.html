@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../../static/Admin/style_admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="../../static/Admin/image/logo.png" alt="University Logo" alt="University Logo">
+            </div>
+            <ul class="nav">
+                <li><a href="{{ url_for('main.admin_dashboard') }}" class="active">Dashboard</a></li>
+                <li><a href="{{ url_for('main.admin_complaints') }}">Complaints Management</a></li>
+                <li><a href="{{ url_for('main.admin_alerts') }}">Alert and Notification</a></li>
+            </ul>
+            <button class="logout-btn" onclick="window.location.href='{{ url_for('main.logout') }}'">Logout</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Admin Dashboard</h1>
+            <div class="summary">
+                <div class="summary-card">
+                    <h3>Total Complaints</h3>
+                    <p id="totalComplaints">{{ total_complaints }}</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Pending Complaints</h3>
+                    <p id="pendingComplaints">{{ pending_complaints }}</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Resolved Complaints</h3>
+                    <p id="resolvedComplaints">{{ resolved_complaints }}</p>
+                </div>
+            </div>
+            <div class="card emotions-distribution">
+                <h2>Emotion Distribution</h2>
+                <canvas id="emotionsChart"></canvas>
+                <div class="emotion-details">
+                    <h3>Emotion Details</h3>
+                    <table id="emotionDetailsTable">
+                        <thead>
+                            <tr>
+                                <th>Emotion</th>
+                                <th>Count</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emotion in emotions %}
+                            <tr>
+                                <td>{{ emotion.name }}</td>
+                                <td>{{ emotion.count }}</td>
+                                <td>{{ emotion.percentage }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../static/Admin/JAVASCRIPT/logout.js"></script>
+    <script src="../../static/Admin/JAVASCRIPT/dashboard_admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
