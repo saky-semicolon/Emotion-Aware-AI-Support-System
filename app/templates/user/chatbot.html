@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emotion Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    const USER_ID = {{ session['user_id'] | tojson }};
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2C7A7B',
+            'user-bubble': '#2C7A7B',
+            'bot-bubble': '#F3F4F6',
+            'bg-happy': 'rgba(76, 175, 80, 0.08)',
+            'bg-sad': 'rgba(33, 150, 243, 0.08)',
+            'bg-angry': 'rgba(244, 67, 54, 0.08)',
+            'bg-fear': 'rgba(156, 39, 176, 0.08)',
+            'bg-neutral': 'rgba(158, 158, 158, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/recorder-js@latest/src/recorder.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-link {
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: #2C7A7B;
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+
+    .sidebar-link:hover::after {
+      transform: scaleY(1);
+    }
+
+    .sidebar-link.active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-link.active::after {
+      transform: scaleY(1);
+    }
+
+    .chat-container {
+      position: relative;
+      background-size: 20px 20px;
+    }
+
+    .chat-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(229, 231, 235, 0.3) 1px, transparent 0);
+      background-size: 20px 20px;
+      z-index: 0;
+    }
+
+    .emotion-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: 200% 200%;
+      opacity: 0.5;
+      z-index: -1;
+      transition: all 1s ease;
+    }
+
+    .happy-bg {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+    }
+
+    .sad-bg {
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.05));
+    }
+
+    .angry-bg {
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.05));
+    }
+
+    .fear-bg {
+      background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(156, 39, 176, 0.05));
+    }
+
+    .neutral-bg {
+      background: linear-gradient(135deg, rgba(158, 158, 158, 0.1), rgba(158, 158, 158, 0.05));
+    }
+
+    .message-bubble {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .user-bubble {
+      background: linear-gradient(135deg, #2C7A7B, #38B2AC);
+      color: white;
+      border-radius: 24px 24px 4px 24px;
+    }
+
+    .bot-bubble {
+      background: white;
+      color: #111827;
+      border-radius: 24px 24px 24px 4px;
+      border: 1px solid #E5E7EB;
+    }
+
+    .typing-indicator {
+      display: inline-flex;
+      padding: 8px 16px;
+      border-radius: 24px;
+      background: white;
+      border: 1px solid #E5E7EB;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #6B7280;
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+
+    .pulse-record {
+      animation: pulse 1.5s infinite ease-out;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .message-enter {
+      animation: messageEnter 0.3s ease-out;
+    }
+
+    @keyframes messageEnter {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scrollbar-custom::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    /* Enhanced message formatting */
+    .bot-message-content {
+      line-height: 1.6;
+    }
+    
+    .bot-message-content p {
+      margin-bottom: 0.75rem;
+    }
+    
+    .bot-message-content strong {
+      font-weight: 600;
+      color: #111827;
+    }
+    
+    .bot-message-content em {
+      font-style: italic;
+      color: #4B5563;
+    }
+    
+    .bot-message-content ul {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .bot-message-content li {
+      margin-bottom: 0.25rem;
+    }
+    
+    .bot-message-content .emoji {
+      font-size: 1.1em;
+      margin-right: 0.25rem;
+    }
+    
+    .bot-message-content .highlight {
+      background-color: rgba(44, 122, 123, 0.1);
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50" 
+      x-data="chatbot()" 
+      x-init="init()"
+      :class="{
+        'happy-bg': currentEmotion === 'happy',
+        'sad-bg': currentEmotion === 'sad',
+        'angry-bg': currentEmotion === 'angry',
+        'fear-bg': currentEmotion === 'fear',
+        'neutral-bg': currentEmotion === 'neutral'
+      }">
+
+  <!-- Sidebar -->
+  <div class="fixed top-0 left-0 h-full w-64 bg-primary text-white z-20 shadow-xl sidebar">
+    <div class="flex justify-center items-center p-6 border-b border-[#3a8b8b]">
+      <a href="{{ url_for('main.home') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU logo" class="w-36 h-auto logo" />
+      </a>
+    </div>
+    <nav class="p-4 space-y-1">
+      <a href="{{ url_for('main.user_dashboard') }}" class="flex items-center sidebar-link p-3 rounded-lg">
+        <span class="w-6 mr-3 flex justify-center">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('main.profile') }}" class="flex items-center sidebar-link p-3 rounded-lg">
+        <span class="w-6 mr-3 flex justify-center">👤</span>
+        <span>Profile</span>
+      </a>
+      <a href="{{ url_for('main.chatbot') }}" class="flex items-center sidebar-link active p-3 rounded-lg">
+        <span class="w-6 mr-3 flex justify-center">💬</span>
+        <span>Chatbot</span>
+      </a>
+      <a href="{{ url_for('main.complaint_status') }}" class="flex items-center sidebar-link p-3 rounded-lg">
+        <span class="w-6 mr-3 flex justify-center">📝</span>
+        <span>Complaint Status</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 w-full p-4">
+      <button onclick="window.location.href='{{ url_for('main.logout') }}'" 
+              class="w-full flex items-center justify-center p-3 bg-gray-800 hover:bg-gray-700 rounded-lg">
+              <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Chat Container -->
+  <div class="ml-64 h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl h-[90%] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col z-10">
+      
+      <!-- Chat Header -->
+      <div class="bg-white border-b border-gray-200 p-4 flex items-center space-x-3">
+        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center">
+          <span class="text-teal-600 text-2xl">🤖</span>
+        </div>
+        <div>
+          <h2 class="font-semibold text-gray-800 text-lg">Emotion Support Bot</h2>
+          <div class="flex items-center">
+            <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+            <p class="text-xs text-gray-500" x-text="isTyping ? 'Typing...' : 'Online now'"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Display -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-4 chat-container scrollbar-custom" x-ref="messages">
+        <!-- Welcome Message -->
+        <div class="flex justify-center">
+          <div class="bg-teal-50 border border-teal-100 rounded-2xl px-4 py-3 max-w-md text-center">
+            <p class="text-teal-800">👋 Hello! I'm here to help with your emotions. [This chat will be deleted in 24 hours]</p>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <template x-for="msg in messages" :key="msg.id">
+          <div :class="msg.sender === 'user' ? 'flex justify-end' : 'flex justify-start'">
+            <div class="max-w-xs lg:max-w-md">
+              <div 
+                class="message-enter message-bubble px-5 py-3"
+                :class="msg.sender === 'user' ? 'user-bubble' : 'bot-bubble'"
+                x-show="!msg.isAudio"
+              >
+                <template x-if="msg.sender === 'bot'">
+                  <div class="bot-message-content" x-html="msg.text"></div>
+                </template>
+                <template x-if="msg.sender === 'user'">
+                  <span x-text="msg.text"></span>
+                </template>
+              </div>
+              <div x-show="msg.isAudio" class="flex justify-end">
+                <div class="message-enter inline-flex items-center user-bubble px-4 py-3">
+                  <audio controls :src="msg.audioUrl" class="h-8"></audio>
+                </div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1 px-2" 
+                   :class="msg.sender === 'user' ? 'text-right' : 'text-left'"
+                   x-text="msg.time"></div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Typing Indicator -->
+        <div x-show="isTyping && messages[messages.length-1]?.sender === 'bot'" 
+             class="flex justify-start">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="p-4 border-t border-gray-200 bg-white">
+        <div class="flex items-center gap-2">  
+          <!-- Record Button -->
+          <button @click="toggleRecording"
+                  class="w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                  :class="isRecording 
+                    ? 'bg-red-500 pulse-record text-white' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+
+          <!-- Text Input -->
+          <input type="text" x-model="newMessage" @keyup.enter="sendMessage(newMessage)"
+                 class="flex-1 border-0 bg-gray-100 hover:bg-gray-200 focus:bg-white focus:ring-2 focus:ring-teal-300 px-5 py-3 rounded-full focus:outline-none transition-all duration-200 shadow-sm"
+                 placeholder="Type your message..."/>
+        
+          <!-- Send Button -->
+          <button @click="sendMessage(newMessage)" :disabled="!newMessage.trim()"
+                  class="w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md"
+                  :class="newMessage.trim() 
+                    ? 'bg-primary hover:bg-teal-700 text-white' 
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emotion Background -->
+  <div class="fixed inset-0 emotion-bg" 
+       :class="{
+         'happy-bg': currentEmotion === 'happy',
+         'sad-bg': currentEmotion === 'sad',
+         'angry-bg': currentEmotion === 'angry',
+         'fear-bg': currentEmotion === 'fear',
+         'neutral-bg': currentEmotion === 'neutral'
+       }"></div>
+
+  <script>
+function chatbot() {
+  return {
+    newMessage: '',
+    messages: [],
+    isRecording: false,
+    isTyping: false,
+    currentEmotion: 'neutral',
+    mediaRecorder: null,
+    audioChunks: [],
+    recordingTimer: null,
+    MAX_RECORDING_DURATION: 180,
+
+    init() {
+  const storedMessages = localStorage.getItem('chatbot_messages');
+  const storedEmotion = localStorage.getItem('chatbot_emotion');
+  const lastSaved = parseInt(localStorage.getItem('chatbot_last_saved')) || 0;
+  const now = Date.now();
+
+  const expired = now - lastSaved > 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+  if (storedMessages && !expired) {
+    this.messages = JSON.parse(storedMessages);
+  } else {
+    // Clear old messages
+    localStorage.removeItem('chatbot_messages');
+    localStorage.removeItem('chatbot_emotion');
+    localStorage.removeItem('chatbot_last_saved');
+    this.addBotMessage("How are you feeling today? I'm here to listen and help.");
+  }
+
+  if (storedEmotion && !expired) {
+    this.currentEmotion = storedEmotion;
+  }
+
+  this._welcomeShown = true;
+},
+
+
+    saveChat() {
+      localStorage.setItem('chatbot_messages', JSON.stringify(this.messages));
+      localStorage.setItem('chatbot_emotion', this.currentEmotion);
+       localStorage.setItem('chatbot_last_saved', Date.now());  // <== Store timestamp
+       },
+
+    addUserMessage(text, isAudio = false, audioUrl = null) {
+      this.messages.push({
+        id: Date.now(),
+        text,
+        sender: 'user',
+        isAudio,
+        audioUrl,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      this.scrollToBottom();
+      this.saveChat();
+    },
+
+    addBotMessage(text) {
+      // Format the bot message with proper HTML structure
+      const formattedText = this.formatBotMessage(text);
+      this.messages.push({
+        id: Date.now(),
+        text: formattedText,
+        sender: 'bot',
+        isAudio: false,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      this.scrollToBottom();
+      this.saveChat();
+    },
+
+    formatBotMessage(text) {
+      // Convert markdown-like formatting to HTML
+      let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // bold
+        .replace(/\*(.*?)\*/g, '<em>$1</em>') // italic
+        .replace(/\n\n/g, '</p><p>') // paragraphs
+        .replace(/\n/g, '<br>') // line breaks
+        .replace(/- (.*?)(<br>|$)/g, '<li>$1</li>') // list items
+        .replace(/✅|🎙️|🔍|🎯|👨‍💼|🧭|🤖|💙|🤔|👋/g, match => `<span class="emoji">${match}</span>`); // emojis
+      
+      // Wrap list items in ul tags
+      if (formatted.includes('<li>')) {
+        formatted = formatted.replace(/<li>.*?<\/li>/g, match => `<ul>${match}</ul>`);
+      }
+      
+      // Wrap the whole content in paragraphs if it contains line breaks
+      if (formatted.includes('<br>') || formatted.includes('<p>')) {
+        formatted = `<p>${formatted}</p>`;
+      }
+      
+      return formatted;
+    },
+
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const container = this.$refs.messages;
+        container.scrollTop = container.scrollHeight;
+      });
+    },
+
+    async sendMessage(text) {
+      if (!text.trim()) return;
+      this.addUserMessage(text);
+      this.newMessage = '';
+      this.isTyping = true;
+      try {
+        const response = await fetch('/chatbot/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        this.addBotMessage(data.reply || 'Something went wrong.');
+        if (data.emotion) {
+          this.currentEmotion = data.emotion.toLowerCase();
+          this.saveChat();
+        }
+      } catch (error) {
+        this.addBotMessage('Failed to connect to the server.');
+      }
+      this.isTyping = false;
+    },
+
+    toggleRecording() {
+      if (this.isRecording) {
+        this.stopRecording();
+      } else {
+        this.startRecording();
+      }
+    },
+
+    startRecording() {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          this.mediaRecorder = new MediaRecorder(stream);
+          this.audioChunks = [];
+
+          this.mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+              this.audioChunks.push(event.data);
+            }
+          };
+
+          this.mediaRecorder.onstop = this.handleRecordingStop.bind(this);
+
+          this.mediaRecorder.start();
+          this.isRecording = true;
+
+          this.recordingTimer = setTimeout(() => this.stopRecording(), this.MAX_RECORDING_DURATION * 1000);
+        })
+        .catch(error => {
+          this.addBotMessage('Please enable microphone access to record audio.');
+          console.error('Error accessing mic:', error);
+        });
+    },
+
+    stopRecording() {
+      if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+        this.mediaRecorder.stop();
+        clearTimeout(this.recordingTimer);
+        this.isRecording = false;
+      }
+    },
+
+    async handleRecordingStop() {
+      const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
+      const audioUrl = URL.createObjectURL(blob);
+      this.addUserMessage('', true, audioUrl);
+
+      this.isTyping = true;
+
+      const formData = new FormData();
+      formData.append('file', blob, 'recording.webm');
+      formData.append('user_id', USER_ID);
+
+      try {
+        const response = await fetch('/api/predict', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result && result.emotion) {
+          this.currentEmotion = result.emotion.toLowerCase();
+        }
+
+        this.addBotMessage(
+          "✅ **Thank you!** Your voice complaint has been successfully submitted. 🎙️\n\n" +
+          "🔍 To check all updates regarding your complaint, go to the **Complaint Status** page from the sidebar."
+        );
+
+      } catch (error) {
+        console.error('Error uploading audio:', error);
+        this.addBotMessage('Sorry, I had trouble processing your audio.');
+      }
+
+      this.isTyping = false;
+      this.saveChat();
+    }
+  }
+}
+</script>
+</body>
+</html>

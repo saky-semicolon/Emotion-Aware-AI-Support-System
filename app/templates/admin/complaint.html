@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complaints Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2C7A7B;
+      --primary-light: #E6FFFA;
+      --status-open: #FECACA;
+      --status-inprogress: #FEF3C7;
+      --status-resolved: #D1FAE5;
+      --status-closed: #E5E7EB;
+      --priority-high: #FEE2E2;
+      --priority-medium: #FEF3C7;
+      --priority-low: #D1FAE5;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F9FAFB;
+    }
+
+    .sidebar {
+      transition: all 0.3s ease;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-item {
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(2px);
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: white;
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+
+    .nav-item:hover::after {
+      transform: scaleY(1);
+    }
+
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .nav-item.active::after {
+      transform: scaleY(1);
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-open {
+      background-color: var(--status-open);
+      color: #B91C1C;
+    }
+
+    .status-inprogress {
+      background-color: var(--status-inprogress);
+      color: #92400E;
+    }
+
+    .status-resolved {
+      background-color: var(--status-resolved);
+      color: #065F46;
+    }
+
+    .status-closed {
+      background-color: var(--status-closed);
+      color: #4B5563;
+    }
+
+    .priority-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .priority-high {
+      background-color: var(--priority-high);
+      color: #B91C1C;
+    }
+
+    .priority-medium {
+      background-color: var(--priority-medium);
+      color: #92400E;
+    }
+
+    .priority-low {
+      background-color: var(--priority-low);
+      color: #065F46;
+    }
+
+    /* Fixed hover effect for table rows */
+    .table-row {
+      transition: background-color 0.2s ease;
+    }
+    
+    .table-row:hover {
+      background-color: #F3F4F6;
+    }
+
+    .table-row:hover td {
+      background-color: transparent !important;
+    }
+
+    .select-style {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      appearance: none;
+      transition: all 0.2s ease;
+    }
+
+    .select-style:hover {
+      border-color: var(--primary);
+    }
+
+    .scrollbar-custom::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+
+    .badge-icon {
+      font-size: 10px;
+    }
+
+    .action-btn {
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .card-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    /* Improved Table Styles */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 900px; /* Increased minimum width to prevent squeezing */
+      table-layout: auto;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: #4a5568;
+      background-color: #f8fafc;
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Responsive column widths */
+    th:nth-child(1), td:nth-child(1) { width: 10%; min-width: 120px; } /* Complaint ID */
+    th:nth-child(2), td:nth-child(2) { width: 15%; min-width: 150px; } /* Status */
+    th:nth-child(3), td:nth-child(3) { width: 15%; min-width: 150px; } /* Priority */
+    th:nth-child(4), td:nth-child(4) { width: 15%; min-width: 120px; } /* Emotion */
+    th:nth-child(5), td:nth-child(5) { width: 20%; min-width: 150px; } /* Actions */
+    th:nth-child(6), td:nth-child(6) { width: 25%; min-width: 200px; } /* Options - Increased min-width */
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 24px;
+      border-radius: 8px;
+      width: 500px;
+      max-width: 90%;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1F2937;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #6B7280;
+    }
+
+    .modal-body textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+      resize: vertical;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+      gap: 8px;
+    }
+
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .modal-btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+    }
+
+    .modal-btn-secondary {
+      background-color: white;
+      color: #4B5563;
+      border: 1px solid #D1D5DB;
+    }
+
+    /* PDF Viewer Modal */
+    #pdfModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1050;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #pdfModal.show {
+      display: flex;
+    }
+
+    #pdfModal .modal-container {
+      background-color: white;
+      width: 90%;
+      max-width: 800px;
+      height: 80vh;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #pdfModal iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #pdfModal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex">
+  <!-- Sidebar -->
+  <div class="sidebar w-64 bg-[#2C7A7B] text-white h-screen fixed">
+    <div class="flex justify-center items-center p-6 border-b border-[#3a8b8b]">
+      <img src="{{ url_for('static', filename='Admin/image/logo.png') }}" alt="AIU Logo" class="w-36 h-auto transition-transform hover:scale-105">
+    </div>
+    <ul class="p-4 space-y-1">
+      <li>
+        <a href="{{ url_for('main.admin_dashboard') }}" class="flex items-center p-3 rounded-lg transition-all hover:bg-[#235f5f]">
+          <span class="w-6 mr-3 flex justify-center"><i class="fas fa-chart-bar"></i></span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('main.admin_complaints') }}" class="flex items-center p-3 rounded-lg bg-[#235f5f]">
+          <span class="w-6 mr-3 flex justify-center"><i class="fas fa-file-alt"></i></span>
+          <span>Complaints</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('main.admin_alerts') }}" class="flex items-center p-3 rounded-lg transition-all hover:bg-[#235f5f]">
+          <span class="w-6 mr-3 flex justify-center"><i class="fas fa-bell"></i></span>
+          <span>Alerts</span>
+        </a>
+      </li>
+    </ul>
+    <div class="absolute bottom-0 w-full p-4 border-t border-[#3a8b8b]">
+      <button onclick="window.location.href='{{ url_for('main.logout') }}'" 
+              class="w-full flex items-center justify-center p-3 bg-[#1a4d4d] hover:bg-[#143d3d] rounded-lg transition-all hover:shadow-md">
+        <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="ml-64 flex-1 p-8">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Complaints Management</h1>
+        <p class="text-sm text-gray-500 mt-1">Manage and track all complaints</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div class="relative">
+          <select id="priorityFilter" onchange="filterComplaintsByPriority()"
+                  class="select-style pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-white">
+            <option value="all">All Priorities</option>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complaints Card -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden card-shadow">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Complaint ID</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Emotion</th>
+              <th>Actions</th>
+              <th>Report</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for complaint in complaints %}
+            <tr class="table-row" data-priority="{{ complaint.priority_level }}">
+              <td class="text-sm text-gray-700 font-medium">{{ complaint.complaint_id }}</td>
+              <td>
+                <select 
+                  data-complaint-id="{{ complaint.complaint_id }}"
+                  onchange="updateStatus('{{ complaint.complaint_id }}', this.value)"
+                  {% if complaint.complaint_status == 'closed' %}disabled{% endif %}
+                  class="status-dropdown select-style w-full pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm font-medium
+                    {% if complaint.complaint_status == 'open' %}status-open
+                    {% elif complaint.complaint_status == 'in_progress' %}status-inprogress
+                    {% elif complaint.complaint_status == 'resolved' %}status-resolved
+                    {% else %}status-closed{% endif %}">
+                  <option value="open" {% if complaint.complaint_status == 'open' %}selected{% endif %}>Open</option>
+                  <option value="in_progress" {% if complaint.complaint_status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                  <option value="resolved" {% if complaint.complaint_status == 'resolved' %}selected{% endif %}>Resolved</option>
+                  <option value="closed" {% if complaint.complaint_status == 'closed' %}selected{% endif %}>Closed</option>
+                </select>
+              </td>
+              <td>
+                <span class="priority-badge {% if complaint.priority_level == 'high' %}priority-high{% elif complaint.priority_level == 'medium' %}priority-medium{% else %}priority-low{% endif %}">
+                  {% if complaint.priority_level == 'high' %}
+                    <i class="fas fa-exclamation-circle badge-icon"></i>
+                  {% elif complaint.priority_level == 'medium' %}
+                    <i class="fas fa-exclamation-triangle badge-icon"></i>
+                  {% else %}
+                    <i class="fas fa-info-circle badge-icon"></i>
+                  {% endif %}
+                  {{ complaint.priority_level }}
+                </span>
+              </td>
+             <td>
+  <div class="flex items-center gap-2">
+    {% if complaint.emotion == 'happy' %}
+      <i class="fas fa-smile text-yellow-400"></i>
+    {% elif complaint.emotion == 'sad' %}
+      <i class="fas fa-sad-tear text-blue-400"></i>
+    {% elif complaint.emotion == 'angry' %}
+      <i class="fas fa-angry text-red-400"></i>
+    {% elif complaint.emotion == 'fear' %}
+      <i class="fas fa-surprise text-purple-500"></i>
+    {% else %}
+      <i class="fas fa-meh text-gray-400"></i>
+    {% endif %}
+    <span class="capitalize">{{ complaint.emotion }}</span>
+  </div>
+</td>
+
+              <td>
+                {% if complaint.complaint_status == 'closed' %}
+                <button disabled
+                class="action-btn text-gray-400 px-3 py-1 rounded-md bg-gray-100 cursor-not-allowed flex items-center gap-1">
+                <i class="fas fa-reply text-sm"></i> Reply
+                </button>
+                {% else %}
+                <button onclick="openReplyModal('{{ complaint.complaint_id }}')"
+                class="action-btn text-primary hover:text-teal-700 px-3 py-1 rounded-md hover:bg-teal-50 transition-all flex items-center gap-1">
+                <i class="fas fa-reply text-sm"></i> Reply
+                </button>
+                {% endif %}
+              </td>
+              <td class="flex gap-2">
+                <button onclick="downloadReport('{{ complaint.complaint_id }}')"
+                        class="action-btn text-primary hover:text-teal-700 px-3 py-1 rounded-md hover:bg-teal-50 transition-all flex items-center gap-1">
+                  <i class="fas fa-download text-sm"></i> 
+                </button>
+
+                <button onclick="viewReport('{{ complaint.complaint_id }}')"
+                        class="action-btn text-blue-500 hover:text-blue-700 px-3 py-1 rounded-md hover:bg-blue-50 transition-all flex items-center gap-1">
+                  <i class="fas fa-eye text-sm"></i> 
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div id="replyModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Send Reply</h3>
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <textarea id="modalReplyText" placeholder="Write your reply here..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="modal-btn modal-btn-primary" onclick="sendModalReply()">Send Reply</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div id="pdfModal">
+      <div class="modal-container">
+        <button class="close-btn" onclick="closePdfModal()">&times;</button>
+        <iframe id="pdfFrame" src=""></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentComplaintId = null;
+    const modal = document.getElementById('replyModal');
+    const modalTextarea = document.getElementById('modalReplyText');
+
+    function openReplyModal(complaintId) {
+      currentComplaintId = complaintId;
+      modal.style.display = 'flex';
+      modalTextarea.value = '';
+      modalTextarea.focus();
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      currentComplaintId = null;
+    }
+
+    function sendModalReply() {
+      if (!currentComplaintId) return;
+
+      const replyText = modalTextarea.value.trim();
+      if (!replyText) {
+        showToast('Please enter a reply message', false);
+        return;
+      }
+
+      fetch(`/send_reply/${currentComplaintId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reply: replyText })
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.error || 'Failed to send reply'); });
+        }
+        return response.json();
+      })
+      .then(data => {
+        showToast('Reply sent successfully!', true);
+        closeModal();
+      })
+      .catch(error => {
+        console.error('Send reply error:', error);
+        showToast(error.message || 'Error sending reply.', false);
+      });
+    }
+
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    function showToast(message, isSuccess = true) {
+      const toast = document.createElement('div');
+      toast.innerHTML = `
+        <div class="fixed top-5 right-5 px-4 py-2 rounded-lg shadow-lg text-white text-sm z-50 flex items-center gap-2
+          ${isSuccess ? 'bg-green-500' : 'bg-red-500'}">
+          <i class="fas ${isSuccess ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+          ${message}
+        </div>
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function updateStatus(complaintId, newStatus) {
+      fetch(`/admin/update_status/${complaintId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          status: newStatus,
+          notes: 'Status changed via admin interface'
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.error || 'Failed to update'); });
+        }
+        return response.json();
+      })
+      .then(data => {
+        const dropdown = document.querySelector(`select[data-complaint-id="${complaintId}"]`);
+        const row = dropdown.closest("tr");
+
+        dropdown.classList.remove('status-open', 'status-inprogress', 'status-resolved', 'status-closed');
+        dropdown.classList.add(`status-${newStatus.replace('_', '')}`);
+
+        if (newStatus === 'closed') {
+          dropdown.disabled = true;
+
+          const tbody = row.parentElement;
+          tbody.removeChild(row);
+          tbody.appendChild(row);
+        }
+
+        showToast('Status updated successfully!', true);
+      })
+      .catch(error => {
+        console.error('Update error:', error);
+        showToast(error.message || 'Error updating status.', false);
+      });
+    }
+
+    function filterComplaintsByPriority() {
+      const selectedPriority = document.getElementById("priorityFilter").value;
+      const rows = document.querySelectorAll(".table-row");
+
+      rows.forEach(row => {
+        const priority = row.getAttribute("data-priority");
+        const statusDropdown = row.querySelector("select.status-dropdown");
+        const status = statusDropdown ? statusDropdown.value : "";
+        const isClosed = status === "closed";
+        const matchesPriority = selectedPriority === "all" || priority === selectedPriority;
+        row.style.display = (!isClosed && matchesPriority) ? "" : "none";
+      });
+    }
+
+    function downloadReport(complaintId) {
+      window.location.href = `/admin/report/${complaintId}`;
+    }
+
+    function viewReport(complaintId) {
+      const pdfUrl = `/admin/report/${complaintId}?download=false`;
+      const iframe = document.getElementById('pdfFrame');
+      iframe.src = pdfUrl;
+
+      const modal = document.getElementById('pdfModal');
+      modal.classList.add('show');
+    }
+
+    function closePdfModal() {
+      const modal = document.getElementById('pdfModal');
+      modal.classList.remove('show');
+      document.getElementById('pdfFrame').src = '';
+    }
+  </script>
+</body>
+</html>

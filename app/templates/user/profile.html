@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+      --sidebar: #2C7A7B;
+      --primary: #2C7A7B;
+      --status-open: #FECACA;
+      --status-inprogress: #FEF3C7;
+      --status-closed: #D1FAE5;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .pulse-glow {
+      animation: pulse 1.5s infinite ease-out;
+    }
+    
+    .sidebar-link {
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .sidebar-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: var(--primary);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+    
+    .sidebar-link:hover::after {
+      transform: scaleY(1);
+    }
+    
+    .sidebar-link.active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-link.active::after {
+      transform: scaleY(1);
+    }
+   
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex">
+
+   <!-- Sidebar -->
+  <div class="fixed top-0 left-0 h-full w-64 bg-[var(--sidebar)] text-white z-10 shadow-xl transition-all duration-300 transform hover:shadow-2xl">
+    <div class="flex justify-center items-center p-6 border-b border-[#3a8b8b]">
+      <a href="{{ url_for('main.home') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU logo" class="w-36 h-auto logo" />
+      </a>
+    </div>
+    <nav class="p-4 space-y-1">
+  <a href="{{ url_for('main.user_dashboard') }}" 
+     class="flex items-center sidebar-link p-3 rounded-lg {% if request.path == url_for('main.user_dashboard') %}active{% endif %}">
+    <span class="w-6 mr-3 flex justify-center">📊</span>
+    <span>Dashboard</span>
+  </a>
+  
+  <a href="{{ url_for('main.profile') }}" 
+     class="flex items-center sidebar-link p-3 rounded-lg {% if request.path == url_for('main.profile') %}active{% endif %}">
+    <span class="w-6 mr-3 flex justify-center">👤</span>
+    <span>Profile</span>
+  </a>
+  
+  <a href="{{ url_for('main.chatbot') }}" 
+     class="flex items-center sidebar-link p-3 rounded-lg {% if request.path == url_for('main.chatbot') %}active{% endif %}">
+    <span class="w-6 mr-3 flex justify-center">💬</span>
+    <span>Chatbot</span>
+  </a>
+  
+  <a href="{{ url_for('main.complaint_status') }}" 
+     class="flex items-center sidebar-link p-3 rounded-lg {% if request.path == url_for('main.complaint_status') %}active{% endif %}">
+    <span class="w-6 mr-3 flex justify-center">📝</span>
+    <span>Complaint Status</span>
+  </a>
+</nav>
+
+    <div class="absolute bottom-0 w-full p-4 ">
+      <button onclick="window.location.href='{{ url_for('main.logout') }}'" 
+              class="w-full flex items-center justify-center p-3 bg-gray-800 hover:bg-gray-700 rounded-lg">
+              <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="ml-64 w-full p-10">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow">
+      <h1 class="text-3xl font-bold text-teal-800 mb-6">Student Profile</h1>
+
+      <!-- Editable Form -->
+      <form method="POST" action="{{ url_for('main.profile') }}">
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-gray-700 mb-2">Full Name</label>
+            <input type="text" name="full_name" id="fullName" value="{{ profile.full_name }}"
+                   readonly class="w-full p-3 border rounded-lg bg-gray-100">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Student ID</label>
+            <input type="text" name="id_number" value="{{ profile.id_number }}" readonly
+                   class="w-full p-3 border rounded-lg bg-gray-100">
+          </div>
+          
+          <!-- Department/School Field - Will be replaced with dropdown in edit mode -->
+          <div>
+            <label class="block text-gray-700 mb-2">School</label>
+            <div id="departmentDisplay">
+              <input type="text" name="department" id="department" value="{{ profile.department.dept_name }}"
+                     readonly class="w-full p-3 border rounded-lg bg-gray-100">
+            </div>
+            <div id="departmentEdit" class="hidden">
+              <select name="school" id="school" disabled class="w-full p-3 border rounded-lg bg-gray-100">
+                <option value="School of Business and Social Sciences" {% if profile.department.dept_name == "School of Business and Social Sciences" %}selected{% endif %}>School of Business and Social Sciences</option>
+                <option value="School of Education and Human Sciences" {% if profile.department.dept_name == "School of Education and Human Sciences" %}selected{% endif %}>School of Education and Human Sciences</option>
+                <option value="School of Computing and Informatics" {% if profile.department.dept_name == "School of Computing and Informatics" %}selected{% endif %}>School of Computing and Informatics</option>
+                <option value="Centre for Foundation and General Studies" {% if profile.department.dept_name == "Centre for Foundation and General Studies" %}selected{% endif %}>Centre for Foundation and General Studies</option>
+                <option value="Centre for Graduate Studies (CGS)" {% if profile.department.dept_name == "Centre for Graduate Studies (CGS)" %}selected{% endif %}>Centre for Graduate Studies</option>
+                <option value="Language Centre" {% if profile.department.dept_name == "Language Centre" %}selected{% endif %}>Language Centre</option>
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 mb-2">Academic Year</label>
+            <input type="text" name="academic_year" id="academicYear" value="{{ profile.academic_year }}"
+                   readonly class="w-full p-3 border rounded-lg bg-gray-100">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Phone Number</label>
+            <input type="text" name="phone" id="phoneNumber" value="{{ profile.phone }}"
+                   readonly class="w-full p-3 border rounded-lg bg-gray-100">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Gender</label>
+            <select name="gender" id="gender" disabled class="w-full p-3 border rounded-lg bg-gray-100"> 
+              <option value="Male" {% if profile.gender == "Male" %}selected{% endif %}>Male</option>
+              <option value="Female" {% if profile.gender == "Female" %}selected{% endif %}>Female</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-8 space-x-4">
+          <button type="button" id="editBtn"
+                  class="bg-green-900 hover:bg-green-700 text-white px-6 py-2 rounded-full shadow"
+                  onclick="enableEdit()">
+            ✏️ Edit
+          </button>
+
+          <button type="submit" id="saveBtn"
+                  class="bg-teal-700 hover:bg-teal-800 text-white px-6 py-2 rounded-full shadow hidden">
+            Save Changes
+          </button>
+
+          <button type="button" id="cancelBtn"
+                  class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-full shadow hidden"
+                  onclick="window.location.reload()">
+            ❌ Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- JavaScript to Toggle Edit Mode -->
+  <script>
+    function enableEdit() {
+      // Enable editing for input fields
+      document.getElementById('fullName').readOnly = false;
+      document.getElementById('academicYear').readOnly = false;
+      document.getElementById('phoneNumber').readOnly = false;
+      
+      // Enable the gender dropdown
+      const genderSelect = document.getElementById('gender');
+      genderSelect.disabled = false;
+      genderSelect.classList.remove('bg-gray-100');
+
+      // Switch department display to dropdown
+      document.getElementById('departmentDisplay').classList.add('hidden');
+      document.getElementById('departmentEdit').classList.remove('hidden');
+      document.getElementById('school').disabled = false;
+      document.getElementById('school').classList.remove('bg-gray-100');
+
+      // Change input background to indicate edit mode
+      document.getElementById('fullName').classList.remove('bg-gray-100');
+      document.getElementById('academicYear').classList.remove('bg-gray-100');
+      document.getElementById('phoneNumber').classList.remove('bg-gray-100');
+      document.getElementById('gender').classList.remove('bg-gray-100');
+
+      // Show Save & Cancel, hide Edit
+      document.getElementById('editBtn').classList.add('hidden');
+      document.getElementById('saveBtn').classList.remove('hidden');
+      document.getElementById('cancelBtn').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

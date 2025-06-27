@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2C7A7B;
+            --primary-light: #E6FFFA;
+            --status-open: #FECACA;
+            --status-inprogress: #FEF3C7;
+            --status-resolved: #D1FAE5;
+            --status-closed: #E5E7EB;
+            --priority-high: #FEE2E2;
+            --priority-medium: #FEF3C7;
+            --priority-low: #D1FAE5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(2px);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: white;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item:hover::after {
+            transform: scaleY(1);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-item.active::after {
+            transform: scaleY(1);
+        }
+
+        .summary-card {
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .emotion-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        .dominant-emotion {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        
+        .happy-color { color: #4CAF50; } /* Changed to green */
+        .sad-color { color: #4682B4; }
+        .angry-color { color: #FF6347; }
+        .fear-color { color: #9C27B0; } /* Added purple for fear */
+        .default-color { color: #A9A9A9; }
+    </style>
+</head>
+<body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-[#2C7A7B] text-white h-screen fixed">
+        <div class="flex justify-center items-center p-6 border-b border-[#3a8b8b]">
+            <img src="{{ url_for('static', filename='Admin/image/logo.png') }}" alt="AIU Logo" class="w-36 h-auto transition-transform hover:scale-105">
+        </div>
+        <ul class="p-4 space-y-1">
+            <li>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="flex items-center p-3 rounded-lg bg-[#235f5f]">
+                    <span class="w-6 mr-3 flex justify-center"><i class="fas fa-chart-bar"></i></span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.admin_complaints') }}" class="flex items-center p-3 rounded-lg transition-all hover:bg-[#235f5f]">
+                    <span class="w-6 mr-3 flex justify-center"><i class="fas fa-file-alt"></i></span>
+                    <span>Complaints</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.admin_alerts') }}" class="flex items-center p-3 rounded-lg transition-all hover:bg-[#235f5f]">
+                    <span class="w-6 mr-3 flex justify-center"><i class="fas fa-bell"></i></span>
+                    <span>Alerts</span>
+                </a>
+            </li>
+        </ul>
+        <div class="absolute bottom-0 w-full p-4 border-t border-[#3a8b8b]">
+            <button onclick="window.location.href='{{ url_for('main.logout') }}'" 
+                    class="w-full flex items-center justify-center p-3 bg-[#1a4d4d] hover:bg-[#143d3d] rounded-lg transition-all hover:shadow-md">
+                <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>
+                <span>Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 flex-1 p-8">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p class="text-sm text-gray-500 mt-1">Overview of complaints and system analytics</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="summary-card bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-full bg-[#E6FFFA] flex items-center justify-center mb-4">
+                    <i class="fas fa-file-alt text-[#2C7A7B] text-xl"></i>
+                </div>
+                <h3 class="text-gray-500 font-medium mb-1">Total Complaints</h3>
+                <p class="text-3xl font-bold text-gray-800" id="totalComplaints">{{ total_complaints }}</p>
+            </div>
+            
+            <div class="summary-card bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-full bg-[#FEF3C7] flex items-center justify-center mb-4">
+                    <i class="fas fa-clock text-[#92400E] text-xl"></i>
+                </div>
+                <h3 class="text-gray-500 font-medium mb-1">Pending Complaints</h3>
+                <p class="text-3xl font-bold text-gray-800" id="pendingComplaints">{{ pending_complaints }}</p>
+            </div>
+            
+            <div class="summary-card bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-full bg-[#D1FAE5] flex items-center justify-center mb-4">
+                    <i class="fas fa-check-circle text-[#065F46] text-xl"></i>
+                </div>
+                <h3 class="text-gray-500 font-medium mb-1">Resolved Complaints</h3>
+                <p class="text-3xl font-bold text-gray-800" id="resolvedComplaints">{{ resolved_complaints }}</p>
+            </div>
+
+            <div class="summary-card bg-white rounded-xl p-6 shadow-md flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <i class="fas fa-star text-xl" id="dominantEmotionIcon"></i>
+                </div>
+                <h3 class="text-gray-500 font-medium mb-1">Dominant Emotion</h3>
+                <p class="text-3xl font-bold dominant-emotion" id="dominantEmotion"></p>
+                <p class="text-sm text-gray-500" id="dominantPercentage"></p>
+            </div>
+        </div>
+
+        <!-- Emotion Chart -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden card-shadow p-6 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Emotion Distribution On Campus</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <canvas id="emotionsChart" height="250"></canvas>
+                </div>
+                <div class="overflow-x-auto scrollbar-custom">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50">
+                            <tr class="text-left text-gray-500 font-medium">
+                                <th class="px-4 py-3">Emotion</th>
+                                <th class="px-4 py-3">Count</th>
+                                <th class="px-4 py-3">Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for emotion in emotions %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-4 py-3 whitespace-nowrap flex items-center">
+                                    {% set emotion_name = 'happy' if emotion.name == 'none' else emotion.name %}
+                                    {% if emotion_name == 'happy' %}
+                                    <i class="fas fa-laugh-beam text-green-500 emotion-icon"></i> <!-- Changed to laugh-beam and green -->
+                                    <span>happy</span>
+                                    {% elif emotion_name == 'sad' %}
+                                    <i class="fas fa-sad-tear text-blue-400 emotion-icon"></i>
+                                    <span>sad</span>
+                                    {% elif emotion_name == 'angry' %}
+                                    <i class="fas fa-angry text-red-400 emotion-icon"></i>
+                                    <span>angry</span>
+                                    {% elif emotion_name == 'fear' %}
+                                    <i class="fas fa-surprise text-purple-500 emotion-icon"></i> <!-- Changed to surprise and purple -->
+                                    <span>fear</span>
+                                    {% else %}
+                                    <i class="fas fa-meh text-gray-400 emotion-icon"></i>
+                                    <span class="capitalize">{{ emotion_name }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ emotion.count }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ emotion.percentage }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pass emotion data to JS -->
+    <script>
+        const emotionData = {{ emotions | tojson }};
+        
+        // Process emotion data to map 'none' to 'happy'
+        const processedEmotionData = emotionData.map(item => {
+            if (item.name === 'none') {
+                return {
+                    name: 'happy',
+                    count: item.count,
+                    percentage: item.percentage
+                };
+            }
+            return item;
+        });
+        
+        // Combine counts for 'happy' and 'none'
+        const combinedEmotionData = processedEmotionData.reduce((acc, curr) => {
+            const existing = acc.find(item => item.name === curr.name);
+            if (existing) {
+                existing.count += curr.count;
+                // Recalculate percentage later
+            } else {
+                acc.push({...curr});
+            }
+            return acc;
+        }, []);
+        
+        // Calculate new percentages
+        const totalCount = combinedEmotionData.reduce((sum, item) => sum + item.count, 0);
+        combinedEmotionData.forEach(item => {
+            item.percentage = ((item.count / totalCount) * 100).toFixed(1);
+        });
+
+        // Find dominant emotion
+        let dominantEmotion = { name: '', percentage: 0 };
+        if (combinedEmotionData.length > 0) {
+            dominantEmotion = combinedEmotionData.reduce((prev, current) => {
+                return (parseFloat(current.percentage) > parseFloat(prev.percentage)) ? current : prev;
+            });
+        }
+    </script>
+
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const labels = combinedEmotionData.map(item => item.name);
+            const counts = combinedEmotionData.map(item => item.count);
+            
+            // Custom colors for each emotion
+            const backgroundColors = combinedEmotionData.map(item => {
+                switch(item.name) {
+                    case 'happy': return '#4CAF50'; // Green
+                    case 'sad': return '#4682B4';  // Steel Blue
+                    case 'angry': return '#FF6347'; // Tomato
+                    case 'fear': return '#9C27B0';  // Purple
+                    default: return '#A9A9A9';     // Dark Gray
+                }
+            });
+
+            // Set up dominant emotion card
+            const dominantEmotionElement = document.getElementById('dominantEmotion');
+            const dominantEmotionIcon = document.getElementById('dominantEmotionIcon');
+            const dominantPercentageElement = document.getElementById('dominantPercentage');
+            
+            if (dominantEmotion.name) {
+                dominantEmotionElement.textContent = dominantEmotion.name;
+                dominantPercentageElement.textContent = `${dominantEmotion.percentage}% of total`;
+                
+                // Set color and icon based on dominant emotion
+                switch(dominantEmotion.name) {
+                    case 'happy':
+                        dominantEmotionElement.classList.add('happy-color');
+                        dominantEmotionIcon.classList.add('happy-color');
+                        dominantEmotionIcon.classList.add('fa-laugh-beam'); // Changed to laugh-beam
+                        break;
+                    case 'sad':
+                        dominantEmotionElement.classList.add('sad-color');
+                        dominantEmotionIcon.classList.add('sad-color');
+                        dominantEmotionIcon.classList.add('fa-sad-tear');
+                        break;
+                    case 'angry':
+                        dominantEmotionElement.classList.add('angry-color');
+                        dominantEmotionIcon.classList.add('angry-color');
+                        dominantEmotionIcon.classList.add('fa-angry');
+                        break;
+                    case 'fear':
+                        dominantEmotionElement.classList.add('fear-color');
+                        dominantEmotionIcon.classList.add('fear-color');
+                        dominantEmotionIcon.classList.add('fa-surprise'); // Changed to surprise
+                        break;
+                    default:
+                        dominantEmotionElement.classList.add('default-color');
+                        dominantEmotionIcon.classList.add('default-color');
+                        dominantEmotionIcon.classList.add('fa-meh');
+                }
+            }
+
+            const ctx = document.getElementById("emotionsChart").getContext("2d");
+            new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

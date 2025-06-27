@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AIU Emotion-Aware Chatbot</title>
+    <style>
+        :root {
+            --primary: #2C7A7B;      /* Green-blue primary color */
+            --primary-hover: #258080; /* Slightly darker for hover */
+            --secondary: #E6FFFA;    /* Light blue secondary color */
+            --text-dark: #1B4D3E;    /* Dark text color */
+            --text-light: #666;      /* Light text color */
+            --input-border: #e0e0e0; /* Input border color */
+            --input-focus: #2C7A7B;  /* Input focus color */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            animation: formSlide 0.8s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            background: #fafafa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 8px rgba(44, 122, 123, 0.15);
+            outline: none;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.97rem;
+        }
+
+        .register-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        @keyframes formSlide {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .login-box {
+                padding: 1.5rem 1rem;
+                max-width: 95vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Admin Login</h1>
+                <p>Enter your credentials to access the admin panel</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('main.login') }}">
+    <input type="email" name="email" placeholder="Enter Admin Email" required>
+    <input type="password" name="password" placeholder="Enter Password" required>
+    <button type="submit">Login</button>
+</form>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const password = document.querySelector('input[name="password"]').value.trim();
+
+            if (username && password) {
+                // Simulate API call for admin authentication
+                setTimeout(() => {
+                    // Replace this condition with actual authentication logic
+                    if (username === 'admin' && password === 'admin123') {
+                        // Redirect to the admin dashboard
+                        window.location.href = '{{ admin_dashboard_url }}';
+                    } else {
+                        alert('Invalid username or password. Please try again.');
+                    }
+                }, 1000);
+            } else {
+                alert('Please fill in both username and password.');
+            }
+        });
+    </script>
+</body>
+</html>

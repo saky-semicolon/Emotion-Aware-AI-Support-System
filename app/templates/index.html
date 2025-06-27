@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Emotion-Aware Chatbot{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container text-center">
+        <h1>Welcome to AIU Emotion-Aware Chatbot</h1>
+        <p>Your voice matters. Let our AI understand and assist you.</p>
+        <div class="buttons">
+            <a href="{{ url_for('main.login') }}" class="btn btn-primary">Login</a>
+            <a href="{{ url_for('main.register') }}" class="btn btn-secondary">Register</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

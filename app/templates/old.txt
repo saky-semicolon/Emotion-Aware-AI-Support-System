@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion-Aware AI Support - AIU</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+<body>
+        <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="../static/images/logo.png" alt="AIU Logo">
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#hero-section" class="list-items"><p class="header-titles">Home</p></a></li>
+                    <li><a href="#how-it-works-section" class="list-items"><p class="header-titles">How It Works</p></a></li>
+                    <li><a href="#sec2" class="list-items"><p class="header-titles">Features</p></a></li>
+                    <li><a href="#about-section" class="list-items"><p class="header-titles">About Us</p></a></li>    
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+
+            <!-- Flask dynamic routing (preferred for live app) -->
+            <a href="{{ url_for('main.login') }}" class="loginbtn">Login</a>
+            <a href="{{ url_for('main.register') }}" class="loginbtn">Get Started</a>
+
+            </div>
+             <div class="menu-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+         <div class="mobile-nav-overlay">
+             <ul>
+                <li><a href="#hero-section">Home</a></li>
+                <li><a href="#how-it-works-section">How It Works</a></li>
+                <li><a href="#sec2">Features</a></li>
+                <li><a href="#demo-section">Demo</a></li>
+                <li><a href="#about-section">About Us</a></li>
+                <li><a href="#contact-section">Contact</a></li>
+                 <li><a href="login.html">Login</a></li>
+                 <li><a href="register.html">Get Started</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section id="hero-section" class="hero-section animate__animated animate__fadeIn">
+        <!-- Add the video background -->
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="../static/images/background.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="container">
+             <div class="hero-content">
+              <h1 class="animate__animated animate__fadeInUp">AI That Hears Your Emotions!</h1>
+              <p class="animate__animated animate__fadeInUp animate__delay-0-5s" id="subtitel">Speak freely about your wellbeing or complaints. Our intelligent system analyzes vocal cues to ensure you get the right support, fast.</p>
+              <a href="register.html" class="btn btn-gradient-blue-red btn-icon"><i class="fas fa-microphone"></i> Get Started</a>
+             </div>
+        </div>
+    </section>
+
+<section class="overview-section-second">
+    <section class="section project-overview-section">
+    <div class="container-overview">
+        <h2 id="title-section" class="section-title text-center">A Voice That Understands You</h2>
+        <div class="overview-grid">
+            <div id="goals-section" class="overview-item animate-on-scroll fade-in">
+                <div class="icon"><i class="fas fa-bullseye"></i></div> <h3>Goal</h3>
+                <p>Detect emotional urgency from students’ voice input (e.g., distress, anger, fear).</p>
+            </div>
+            <div id="goals-section" class="overview-item animate-on-scroll fade-in delay-0-2s">
+                 <div class="icon"><i class="fas fa-exclamation-triangle"></i></div> <h3>Problem Solved</h3>
+                <p>Traditional text-based systems overlook emotional urgency, leading to delayed support.</p>
+            </div>
+            <div id="goals-section" class="overview-item animate-on-scroll fade-in delay-0-4s">
+                 <div class="icon"><i class="fas fa-cogs"></i></div> <h3>How It Works (Briefly)</h3>
+                <p>Voice input → Emotion detection (via CNN-LSTM) → Categorization → Auto-response or alert.</p>
+            </div>
+             <div id="goals-section" class="overview-item animate-on-scroll fade-in delay-0-6s">
+                 <div class="icon"><i class="fas fa-chart-line"></i></div> <h3>Outcome</h3>
+                <p>Faster support, prioritized care, and improved access to mental health resources.</p>
+            </div>
+        </div>
+    </div>
+<section id="sec2">
+    <div class="container-overview">
+        <h2 id="title-section" class="section-title text-center">What Our Chatbot Can Do for You?</h2>
+        <div class="overview-grid">
+            <div id="goals-section" class="overview-item animate-on-scroll fade-in">
+                <div class="icon"><i class="fas fa-microphone-alt"></i></div>
+                <h3>Voice Emotion Detection</h3>
+                <p>Analyzes vocal cues to identify underlying emotions like stress, sadness, or anger.</p>
+            </div>
+            <div id="goals-section" class="overview-item animate-on-scroll fade-in delay-0-2s">
+                <div class="icon"><i class="fas fa-bell"></i></div>
+                <h3>Urgent Case Alerting</h3>
+                <p>Automatically flags high-urgency conversations for immediate staff attention.</p>
+            </div>
+            <div id="goals-section" class="overview-item animate-on-scroll fade-in delay-0-4s">
+                <div class="icon"><i class="fas fa-robot"></i></div>
+                <h3>Smart Auto-Responses</h3>
+                <p>Provides instant, empathetic responses tailored to the detected emotional state.</p>
+            </div>
+             <div id="goals-section" class="overview-item animate-on-scroll fade-in delay-0-6s">
+                <div class="icon"><i class="fas fa-chart-bar"></i></div>
+                <h3>Emotional Trend Reports</h3>
+                <p>Generates reports to help the university understand overall student wellbeing trends.</p>
+            </div>
+        </div>
+    </div>
+</section>
+</section>
+
+    <section id="how-it-works-section" class="section how-it-works-section">
+        <!-- Video Background -->
+        <video autoplay muted loop playsinline class="background-video">
+            <!-- <source src="images/arts (1).mp4" type="video/mp4"> -->
+            Your browser does not support the video tag.
+        </video>
+    
+        <!-- Content -->
+        <div class="container">
+            <h2 class="section-title text-center">How Does It Work?</h2>
+            <div class="how-it-works-timeline">
+                <div class="timeline-item animate-on-scroll slide-in-left">
+                    <div class="icon"><i class="fas fa-microphone-alt"></i></div>
+                    <div id="content2" class="content">
+                        <h3>Step 1: Voice Input</h3>
+                        <p>You comfortably record your concern or query using your voice.</p>
+                    </div>
+                </div>
+                <div class="timeline-item animate-on-scroll slide-in-right delay-0-3s">
+                    <div class="icon"><i class="fas fa-brain"></i></div>
+                    <div id="content2" class="content">
+                        <h3>Step 2: Emotion Detection</h3>
+                        <p>Our AI analyzes your voice, identifying key emotional indicators.</p>
+                    </div>
+                </div>
+                <div class="timeline-item animate-on-scroll slide-in-left delay-0-6s">
+                    <div class="icon"><i class="fas fa-tags"></i></div>
+                    <div id="content2" class="content">
+                        <h3>Step 3: Urgency Categorized</h3>
+                        <p>Based on the detected emotions, the system categorizes the urgency level.</p>
+                    </div>
+                </div>
+                <div class="timeline-item animate-on-scroll slide-in-right delay-0-9s">
+                    <div class="icon"><i class="fas fa-headset"></i></div>
+                    <div id="content2" class="content">
+                        <h3>Step 4: Support Path Activated</h3>
+                        <p>You receive an intelligent auto-response, or an urgent alert is sent to staff.</p>
+                    </div>
+                </div>
+                <div class="timeline-item animate-on-scroll slide-in-left delay-1-2s">
+                    <div class="icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div id="content2" class="content">
+                        <h3>Step 5: Case Tracked</h3>
+                        <p>If escalated, staff manage your case through a dedicated dashboard until resolution.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+<section class="last-container">
+    <section id="img-remo" class="section goals-impact-section bg-light">
+        <div class="container">
+            <h2 class="section-title text-center">Our Mission & Expected Impact</h2>
+            <div class="impact-metrics-grid">
+                <div class="metric-box animate-on-scroll flip-in delay-0-2s">
+                    <div class="icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>🎯 80% Accuracy</h3>
+                    <p>In emotion classification.</p>
+                </div>
+                 <div class="metric-box animate-on-scroll flip-in delay-0-4s">
+                     <div class="icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <h3>⚡ 30% Faster</h3>
+                    <p>Complaint response time.</p>
+                </div>
+                 <div class="metric-box animate-on-scroll flip-in delay-0-6s">
+                     <div class="icon"><i class="fas fa-ambulance"></i></div>
+                    <h3>🆘 20% Higher</h3>
+                    <p>Resolution of urgent cases.</p>
+                </div>
+                 <div class="metric-box animate-on-scroll flip-in delay-0-8s">
+                     <div class="icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h3>🧍 Improved Support</h3>
+                    <p>Enhanced mental health support accessibility.</p>
+                </div>
+                 <div class="metric-box animate-on-scroll flip-in delay-1s">
+                     <div class="icon"><i class="fas fa-database"></i></div>
+                    <h3>📈 Data-Driven</h3>
+                    <p>Inform campus wellness strategies with insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about-section" class="section about-team-section bg-light">
+        <div class="container">
+            <h2 id="ti-dev" class="section-title text-center">Meet the Developers</h2>
+             <div class="team-grid"> <div class="team-member animate-on-scroll flip-in-y">
+                     <img src="../static/images/rania.jpg" alt="Rania Kherba Photo">
+                     <h3>Rania Kherba</h3>
+                     <p class="role">CEO</p>
+                     <p class="quote">"Our goal is to build technology that truly listens."</p>
+                 </div>
+    
+                 <div class="team-member animate-on-scroll flip-in-y delay-0-3s"> 
+                    <img src="../static/images/saky.jpg" alt="Ahmed Dugje Kadiri Photo">
+                     <h3>S M Asiful Islam Saky</h3>
+                     <p class="role">CTO</p>
+                     <p class="quote">"Leveraging AI for empathetic student support."</p>
+                 </div>
+    
+                  <div class="team-member animate-on-scroll flip-in-y delay-0-6s"> 
+                    <img src="../static/images/adk.jpg" alt="S M Asiful Islam Saky Photo">
+                     <h3>Ahmed Dugje Kadiri</h3>
+                     <p class="role">CTO</p>
+                     <p class="quote">"Making mental wellbeing resources more accessible."</p>
+                 </div>
+    </section>
+</section>
+<section id="rm-gap" class="section privacy-ethics-section">
+    <div class="container">
+        <h2 class="section-title text-center">Built with Ethics and Privacy in Mind</h2>
+         <div class="privacy-content animate-on-scroll fade-in">
+            <p>We prioritize your privacy and handle your data with the utmost care and responsibility. Our system adheres to strict data protection regulations.</p>
+             <ul class="privacy-list">
+                <li><i class="fas fa-check-circle"></i> GDPR/CCPA compliance</li>
+                <li><i class="fas fa-check-circle"></i> Explicit user consent required for data processing</li>
+                <li><i class="fas fa-check-circle"></i> No sensitive voice or emotional data stored long-term without permission</li>
+                <li><i class="fas fa-check-circle"></i> Option to view and delete your user data anytime</li>
+                <li><i class="fas fa-check-circle"></i> Continuous efforts to mitigate algorithmic bias</li>
+            </ul>
+         </div>
+     </div>
+ </section>
+
+</section>
+
+    <footer class="site-footer">
+         <div id="footer-cont" class="container">
+            <div class="container text-center">
+                 <div class="contact-info animate-on-scroll fade-in delay-0-3s">
+                    <p class="fo-p"><i class="fas fa-envelope"></i> Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+                    <p class="fo-p"><i class="fas fa-phone"></i> Phone: <a href="tel:+1234567890">+123 456 7890</a> (Optional)</p>
+                    <p class="fo-p"><i class="fas fa-map-marker-alt"></i> Location: Albukhary International University (AIU)</p>
+                    <p class="fo-p">&copy; <span id="current-year"></span> AIU Emotion-Aware Chatbot Project. All rights reserved.</p>
+                </div>
+         </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
+</html>

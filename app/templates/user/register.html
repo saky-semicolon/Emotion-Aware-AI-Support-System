@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration | AIU Emotion-Aware Chatbot</title>
+  <style>
+    :root {
+      --primary: #2C7A7B;
+      --secondary: #E6FFFA;
+      --text-dark: #1B4D3E;
+      --text-light: #666;
+      --input-border: #e0e0e0;
+      --input-focus: #2C7A7B;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: var(--secondary);
+    }
+
+    .side-image {
+      flex: 1;
+      background: linear-gradient(rgba(44, 122, 123, 0.8), rgba(44, 122, 123, 0.8)),
+                  url('{{ side_image_url }}');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      animation: imageSlide 1s ease-out;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .side-content {
+      color: white;
+      text-align: center;
+      max-width: 600px;
+      margin-top: 5rem;
+      padding: 2rem 0;
+    }
+
+    .instructions {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(3px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: left;
+      animation: fadeIn 1s ease-out 0.4s;
+      animation-fill-mode: backwards;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .instructions h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+      color: #fff;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .instructions h3::before {
+      content: '📘';
+      font-size: 1.2rem;
+    }
+
+    .instructions ul {
+      padding-left: 1.5rem;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .instructions li {
+      margin-bottom: 1rem;
+      padding-left: 0.5rem;
+      position: relative;
+    }
+
+    .instructions li::before {
+      content: '';
+      position: absolute;
+      left: -1.2rem;
+      top: 0.6rem;
+      width: 6px;
+      height: 6px;
+      background: #4CAF50;
+      border-radius: 50%;
+    }
+
+    .instructions strong {
+      color: #c8e6c9;
+      font-weight: 500;
+    }
+
+    .register-container {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .register-box {
+      background: white;
+      padding: 3rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      animation: formSlide 0.8s ease-out;
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .register-header h1 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .register-header p {
+      color: var(--text-light);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 8px rgba(44, 122, 123, 0.2);
+    }
+
+    .form-group input[type="file"] {
+      padding: 0.5rem;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .register-btn:hover {
+      background: #4CAF50;
+      transform: translateY(-2px);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--text-light);
+    }
+
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    @keyframes imageSlide {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes formSlide {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .side-image {
+        padding: 4rem 2rem;
+        height: auto;
+      }
+
+      .instructions {
+        margin: 1.5rem 0;
+        padding: 1rem;
+      }
+
+      .instructions h3 {
+        font-size: 1.2rem;
+      }
+
+      .instructions ul {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Left Banner -->
+  <div class="side-image">
+    <div class="side-content">
+      <h2 style="margin-top: -2rem;">Student Registration</h2>
+      <p>Join AIU's wellness community to access emotional support tailored for students.</p>
+      <div class="instructions">
+        <h3>How to Register:</h3>
+        <ul>
+          <li>Fill in your <strong>full name</strong> as per university records</li>
+          <li>Enter your <strong>student ID</strong> (e.g., AIU2024XYZ)</li>
+          <li>Use your official <strong>@aiu.edu</strong> email address</li>
+          <li>Provide your <strong>school</strong> details</li>
+          <li>Select your <strong>academic year</strong> and <strong>semester</strong></li>
+          <li>Create a strong password (8+ characters with numbers)</li>
+          <li>Click "Register" to verify your student status</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration Form -->
+  <div class="register-container">
+    <div class="register-box">
+      <div class="register-header">
+        <h1>Create Student Account</h1>
+        <p>Fill in your details to register</p>
+      </div>
+      {% if error_message %}
+    <div style="color: red; text-align: center; margin-bottom: 1rem; font-weight: 500;">
+      {{ error_message }}
+    </div>
+    {% endif %}
+
+      <form id="registerForm" method="POST" action="{{ register_action }}" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" required>
+            <option value="" disabled selected>Select your gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phone" name="phone" required />
+        </div>
+
+        <div class="form-group">
+          <label for="studentId">Student ID</label>
+          <input type="text" id="studentId" name="studentId" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">University Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="school">School</label>
+          <select id="school" name="school" required>
+            <option value="" disabled selected>Select your school</option>
+            <option value="School of Business and Social Sciences">School of Business and Social Sciences</option>
+            <option value="School of Education and Human Sciences">School of Education and Human Sciences</option>
+            <option value="School of Computing and Informatics">School of Computing and Informatics</option>
+            <option value="Centre for Foundation and General Studies">Centre for Foundation and General Studies</option>
+            <option value="Centre for Graduate Studies (CGS)">Centre for Graduate Studies</option>
+            <option value="Language Centre">Language Centre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="year">Year</label>
+          <select id="year" name="year" required>
+            <option value="" disabled selected>Select Year</option>
+            <option value="1">Year 1</option>
+            <option value="2">Year 2</option>
+            <option value="3">Year 3</option>
+            <option value="4">LC</option>
+            <option value="5">Foundation</option>
+          </select>
+        </div>
+
+        
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div style="position: relative;">
+            <input type="password" id="password" name="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" title="Password must be at least 8 characters long and include uppercase, lowercase, number, and symbol." style="padding-right: 2.5rem;" />
+            <button type="button" onclick="toggleVisibility('password')" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: none; border: none;">👁️‍🗨️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div style="position: relative;">
+            <input type="password" id="confirmPassword" name="confirmPassword" required style="padding-right: 2.5rem;" />
+            <button type="button" onclick="toggleVisibility('confirmPassword')" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: none; border: none;">👁️‍🗨️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="register-btn">Register</button>
+      </form>
+
+      <div class="login-link">
+        Already registered? <a href="{{ url_for('main.login') }}">Sign in here</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleVisibility(fieldId) {
+      const field = document.getElementById(fieldId);
+      field.type = field.type === "password" ? "text" : "password";
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+      const email = document.getElementById('email').value;
+      const domain = "@student.aiu.edu.my";
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!email.endsWith(domain)) {
+        alert('Only student emails ending in ' + domain + ' are allowed.');
+        event.preventDefault();
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        event.preventDefault();
+        return;
+      }
+
+      const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!strongPasswordRegex.test(password)) {
+        alert('Password must be strong: 8+ characters, include uppercase, lowercase, number, and symbol.');
+        event.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+  currentEmotion: '',
+  emotions: [
+    { name: 'Happy', value: {{ emotions.happy | default(0.0) | float }}, emoji: '😊', color: '#4CAF50', gradient: 'from-green-100 to-green-50' },
+    { name: 'Sad', value: {{ emotions.sad | default(0.0) | float }}, emoji: '😢', color: '#2196F3', gradient: 'from-blue-100 to-blue-50' },
+    { name: 'Angry', value: {{ emotions.angry | default(0.0) | float }}, emoji: '😠', color: '#F44336', gradient: 'from-red-100 to-red-50' },
+    { name: 'Fear', value: {{ emotions.fear | default(0.0) | float }}, emoji: '😨', color: '#9C27B0', gradient: 'from-purple-100 to-purple-50' },
+    { name: 'Neutral', value: {{ emotions.neutral | default(0.0) | float }}, emoji: '😐', color: '#9E9E9E', gradient: 'from-gray-100 to-gray-50' }
+  ],
+  init() {
+    const highest = this.emotions.reduce((prev, current) => 
+      (prev.value > current.value) ? prev : current
+    );
+    this.currentEmotion = highest.name.toLowerCase();
+  },
+  updateEmotion(index) {
+    this.currentEmotion = this.emotions[index].name.toLowerCase();
+  }
+}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emotion Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --sidebar: #2C7A7B;
+      --primary: #2C7A7B;
+      --status-open: #FECACA;
+      --status-inprogress: #FEF3C7;
+      --status-closed: #D1FAE5;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .pulse-glow {
+      animation: pulse 1.5s infinite ease-out;
+    }
+    
+    .sidebar-link {
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .sidebar-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: var(--primary);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+    
+    .sidebar-link:hover::after {
+      transform: scaleY(1);
+    }
+    
+    .sidebar-link.active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-link.active::after {
+      transform: scaleY(1);
+    }
+
+    .emotion-card {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .emotion-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    @keyframes pulse { 
+      0%, 100% { transform: scale(1); opacity: 1; } 
+      50% { transform: scale(1.1); opacity: 0.8; } 
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes fade {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px currentColor; }
+      50% { text-shadow: 0 0 20px currentColor; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="fixed top-0 left-0 h-full w-64 bg-[var(--sidebar)] text-white z-10 shadow-lg">
+    <div class="flex justify-center items-center p-6 border-b border-[#3a8b8b]">
+      <a href="{{ url_for('main.home') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AIU logo" class="w-36 h-auto logo" />
+      </a>
+    </div>
+
+    <nav class="p-4 space-y-2 mt-4">
+      <a href="{{ url_for('main.user_dashboard') }}" class="flex items-center sidebar-link active p-3 rounded-lg text-gray-200 hover:text-white">
+        <span class="w-6 mr-3 flex justify-center">📊</span> 
+        <span class="font-medium">Dashboard</span>
+      </a>
+      <a href="{{ url_for('main.profile') }}" class="flex items-center sidebar-link p-3 rounded-lg text-gray-200 hover:text-white">
+        <span class="w-6 mr-3 flex justify-center">👤</span> 
+        <span class="font-medium">Profile</span>
+      </a>
+      <a href="{{ url_for('main.chatbot') }}" class="flex items-center sidebar-link p-3 rounded-lg text-gray-200 hover:text-white">
+        <span class="w-6 mr-3 flex justify-center">💬</span> 
+        <span class="font-medium">Chatbot</span>
+      </a>
+      <a href="{{ url_for('main.complaint_status') }}" class="flex items-center sidebar-link p-3 rounded-lg text-gray-200 hover:text-white">
+        <span class="w-6 mr-3 flex justify-center">📝</span> 
+        <span class="font-medium">Complaint Status</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 w-full p-4 border-t border-[#3a8b8b]">
+      <button onclick="window.location.href='{{ url_for('main.logout') }}'" 
+              class="w-full flex items-center justify-center p-3 bg-gray-800 hover:bg-gray-700 rounded-lg">
+              <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>
+        <span>Logout</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="ml-64 p-8 min-h-screen">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Welcome back, {{ user_name }}</h1>
+        <p class="text-gray-600">Your emotional journey today</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm p-3">
+        <span class="text-gray-500">Last updated:</span>
+        <span class="font-medium" id="current-time"></span>
+      </div>
+    </div>
+
+    <!-- Emotion Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+      <template x-for="(emotion, index) in emotions" :key="index">
+        <div 
+          class="emotion-card bg-white rounded-xl shadow-md p-4 cursor-pointer transition-all duration-300 hover:shadow-lg"
+          @click="updateEmotion(index)"
+          :class="{
+            'ring-2 ring-offset-2': currentEmotion === emotion.name.toLowerCase(),
+            'ring-green-500': currentEmotion === 'happy',
+            'ring-blue-500': currentEmotion === 'sad',
+            'ring-red-500': currentEmotion === 'angry',
+            'ring-purple-500': currentEmotion === 'fear',
+            'ring-gray-500': currentEmotion === 'neutral'
+          }"
+          :style="`border-bottom: 4px solid ${emotion.color}`">
+          <div class="flex items-center justify-between">
+            <span class="text-3xl" x-text="emotion.emoji"></span>
+            <span class="text-lg font-bold" x-text="`${(emotion.value * 100).toFixed(1)}%`" :style="`color: ${emotion.color}`"></span>
+          </div>
+          <h3 class="mt-2 font-semibold text-gray-700 capitalize" x-text="emotion.name.toLowerCase()"></h3>
+        </div>
+      </template>
+    </div>
+
+    <!-- Current Emotion Display -->
+    <section class="bg-gradient-to-r mb-8 p-8 rounded-2xl shadow-lg max-w-4xl mx-auto transition-all duration-500"
+      :class="emotions.find(e => e.name.toLowerCase() === currentEmotion).gradient">
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="text-center md:text-left mb-6 md:mb-0">
+          <h2 class="text-2xl font-bold text-gray-700">Current Emotion</h2>
+          <p class="text-gray-600 mt-1">How you're feeling right now</p>
+        </div>
+        <div class="flex items-center">
+          <div class="text-8xl mr-6 select-none"
+            :class="{
+              'animate-pulse text-green-500': currentEmotion === 'happy',
+              'animate-fade text-blue-500': currentEmotion === 'sad',
+              'animate-shake text-red-500': currentEmotion === 'angry',
+              'animate-glow text-purple-500': currentEmotion === 'fear',
+              'text-gray-500': currentEmotion === 'neutral'
+            }"
+            x-text="emotions.find(e => e.name.toLowerCase() === currentEmotion).emoji">
+          </div>
+          <div>
+            <h3 class="text-4xl font-extrabold capitalize mb-2"
+              :style="{ color: emotions.find(e => e.name.toLowerCase() === currentEmotion).color }"
+              x-text="currentEmotion">
+            </h3>
+            <p class="text-lg text-gray-700 italic" x-text="{
+              happy: 'You seem happy today! Keep spreading positivity.',
+              sad: 'It\'s okay to feel sad sometimes. Tomorrow will be better.',
+              angry: 'Take a deep breath. You\'ve got this.',
+              fear: 'Courage is fear that has said its prayers.',
+              neutral: 'Balance is the key to everything.'
+            }[currentEmotion]">
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emotion Distribution Chart -->
+    <section class="bg-white p-6 rounded-2xl shadow-md max-w-4xl mx-auto mb-8">
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-800">Emotion Distribution</h2>
+        <p class="text-gray-600">Confidence levels for each emotional state</p>
+      </div>
+      <div id="emotionChart" class="h-80"></div>
+    </section>
+
+  
+    <!-- Add this section after your current charts -->
+<section class="bg-white p-6 rounded-2xl shadow-md max-w-4xl mx-auto mb-8">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Emotional State Breakdown</h2>
+    <p class="text-gray-600">Visualizing your emotional landscape</p>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <div id="enhancedDonut" class="h-96"></div>
+    <div class="space-y-4">
+      <template x-for="(emotion, index) in emotions" :key="index">
+        <div class="flex items-center p-3 rounded-lg transition-all duration-300 hover:bg-gray-50"
+             @mouseenter="donutChart.highlightSeries(index)"
+             @mouseleave="donutChart.resetSeries()">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3" 
+               :style="`background-color: ${emotion.color}`">
+            <span class="text-white text-lg" x-text="emotion.emoji"></span>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold capitalize" x-text="emotion.name.toLowerCase()"></h3>
+            <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+              <div class="h-2 rounded-full" 
+                   :style="`width: ${emotion.value * 100}%; background-color: ${emotion.color}`"></div>
+            </div>
+          </div>
+          <span class="ml-3 font-bold" 
+                :style="`color: ${emotion.color}`"
+                x-text="`${(emotion.value * 100).toFixed(1)}%`"></span>
+        </div>
+      </template>
+    </div>
+  </div>
+</section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Update current time
+      function updateTime() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleString();
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
+
+      // Prepare emotion data
+      const emotionsData = [
+        { name: 'Happy', value: {{ emotions.happy | default(0.0) | float }}, color: '#4CAF50' },
+        { name: 'Sad', value: {{ emotions.sad | default(0.0) | float }}, color: '#2196F3' },
+        { name: 'Angry', value: {{ emotions.angry | default(0.0) | float }}, color: '#F44336' },
+        { name: 'Fear', value: {{ emotions.fear | default(0.0) | float }}, color: '#9C27B0' },
+        { name: 'Neutral', value: {{ emotions.neutral | default(0.0) | float }}, color: '#9E9E9E' }
+      ];
+
+      // Bar Chart Configuration
+      const barOptions = {
+        series: [{
+          name: 'Confidence Level',
+          data: emotionsData.map(e => e.value)
+        }],
+        chart: {
+          type: 'bar',
+          height: '100%',
+          animations: {
+            enabled: true,
+            easing: 'easeOutExpo',
+            speed: 800
+          },
+          events: {
+            click: function(event, chartContext, config) {
+              if (config.dataPointIndex !== undefined) {
+                document.querySelector('[x-data]').__x.$data.updateEmotion(config.dataPointIndex);
+              }
+            }
+          }
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 6,
+            columnWidth: '60%',
+            distributed: true,
+            dataLabels: {
+              position: 'top'
+            }
+          }
+        },
+        colors: emotionsData.map(e => e.color),
+        dataLabels: {
+          enabled: true,
+          formatter: function(val) {
+            return (val * 100).toFixed(1) + '%';
+          },
+          offsetY: -25,
+          style: {
+            fontSize: '12px',
+            fontWeight: '600',
+            colors: ['#374151']
+          }
+        },
+        xaxis: {
+          categories: emotionsData.map(e => e.name),
+          labels: {
+            style: {
+              fontSize: '14px',
+              fontWeight: '600'
+            }
+          },
+          axisBorder: {
+            show: false
+          },
+          axisTicks: {
+            show: false
+          },
+          crosshairs: {
+            show: true,
+            position: 'back',
+            stroke: {
+              color: '#e5e7eb',
+              width: 1,
+              dashArray: 0
+            }
+          }
+        },
+        yaxis: {
+          max: 1,
+          tickAmount: 5,
+          labels: {
+            formatter: function(val) {
+              return (val * 100).toFixed(0) + '%';
+            }
+          },
+          title: {
+            text: 'Confidence Level',
+            style: {
+              fontSize: '14px',
+              fontWeight: '600'
+            }
+          }
+        },
+        grid: {
+          borderColor: '#f3f4f6',
+          strokeDashArray: 4,
+          padding: {
+            top: 20,
+            right: 10,
+            bottom: 0,
+            left: 10
+          }
+        },
+        tooltip: {
+          enabled: true,
+          y: {
+            formatter: function(val) {
+              return (val * 100).toFixed(1) + '% confidence';
+            },
+            title: {
+              formatter: function() {
+                return '';
+              }
+            }
+          },
+          marker: {
+            show: false
+          }
+        }
+      };
+
+
+      // Render charts
+      const barChart = new ApexCharts(document.querySelector("#emotionChart"), barOptions);
+      barChart.render();
+
+      // Enhanced Donut Chart Configuration
+      const donutOptions = {
+        series: emotionsData.map(e => e.value * 100),
+  chart: {
+    type: 'donut',
+    height: '100%',
+    animations: {
+      enabled: true,
+      easing: 'easeOutBack',
+      speed: 1000,
+      animateGradually: { enabled: true }
+    },
+    events: {
+      dataPointSelection: (event, chartContext, { dataPointIndex }) => {
+        document.querySelector('[x-data]').__x.$data.updateEmotion(dataPointIndex);
+      }
+    }
+  },
+  labels: emotionsData.map(e => e.name),
+  colors: emotionsData.map(e => e.color),
+  plotOptions: {
+    pie: {
+      donut: {
+        size: '65%',
+        background: 'transparent',
+        labels: {
+          show: true,
+          name: { 
+            fontSize: '14px',
+            fontWeight: 600,
+            color: '#6B7280'
+          },
+          value: {
+            fontSize: '24px',
+            fontWeight: 700,
+            color: '#111827',
+            formatter: (val) => `${val}%`
+          },
+          total: {
+            show: true,
+            showAlways: true,
+            label: 'Emotional Mix',
+            fontSize: '16px',
+            fontWeight: 600,
+            color: '#2C7A7B',
+            formatter: () => '100%'
+          }
+        }
+      },
+      customScale: 1,
+      offsetY: 0,
+      startAngle: 0,
+      endAngle: 360,
+      expandOnClick: true
+    }
+  },
+  stroke: {
+    width: 2,
+    colors: ['#fff']
+  },
+  dataLabels: {
+    enabled: false
+  },
+  legend: {
+    show: false
+  },
+  tooltip: {
+    enabled: true,
+    y: {
+      formatter: (val) => `${val.toFixed(1)}%`,
+      title: {
+        formatter: (seriesName) => seriesName
+      }
+    },
+    marker: {
+      show: true
+    }
+  },
+  states: {
+    hover: {
+      filter: {
+        type: 'lighten',
+        value: 0.1
+      }
+    },
+    active: {
+      filter: {
+        type: 'darken',
+        value: 0.1
+      }
+    }
+  }
+};
+
+// Render the chart
+const donutChart = new ApexCharts(document.querySelector("#enhancedDonut"), donutOptions);
+donutChart.render();
+
+// Make chart accessible to Alpine.js for hover effects
+document.addEventListener('alpine:init', () => {
+  Alpine.store('charts', { donutChart });
+});
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts and Notifications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2C7A7B;
+            --primary-light: #E6FFFA;
+            --status-open: #FECACA;
+            --status-inprogress: #FEF3C7;
+            --status-resolved: #D1FAE5;
+            --status-closed: #E5E7EB;
+            --priority-high: #FEE2E2;
+            --priority-medium: #FEF3C7;
+            --priority-low: #D1FAE5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .priority-high { background-color: var(--priority-high); color: #B91C1C; }
+        .priority-medium { background-color: var(--priority-medium); color: #92400E; }
+        .priority-low { background-color: var(--priority-low); color: #065F46; }
+        .status-open { background-color: var(--status-open); color: #B91C1C; }
+        .status-inprogress { background-color: var(--status-inprogress); color: #92400E; }
+        .status-resolved { background-color: var(--status-resolved); color: #065F46; }
+        .status-closed { background-color: var(--status-closed); color: #4B5563; }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .emotion-icon {
+            font-size: 1rem;
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-[#2C7A7B] text-white h-screen fixed">
+        <div class="flex justify-center items-center p-6 border-b border-[#3a8b8b]">
+            <img src="{{ url_for('static', filename='Admin/image/logo.png') }}" alt="AIU Logo" class="w-36 h-auto transition-transform hover:scale-105">
+        </div>
+        <ul class="p-4 space-y-1">
+            <li><a href="{{ url_for('main.admin_dashboard') }}" class="flex items-center p-3 rounded-lg transition-all hover:bg-[#235f5f]"><span class="w-6 mr-3 flex justify-center"><i class="fas fa-chart-bar"></i></span>Dashboard</a></li>
+            <li><a href="{{ url_for('main.admin_complaints') }}" class="flex items-center p-3 rounded-lg transition-all hover:bg-[#235f5f]"><span class="w-6 mr-3 flex justify-center"><i class="fas fa-file-alt"></i></span>Complaints</a></li>
+            <li><a href="{{ url_for('main.admin_alerts') }}" class="flex items-center p-3 rounded-lg bg-[#235f5f]"><span class="w-6 mr-3 flex justify-center"><i class="fas fa-bell"></i></span>Alerts</a></li>
+        </ul>
+        <div class="absolute bottom-0 w-full p-4 border-t border-[#3a8b8b]">
+            <button onclick="window.location.href='{{ url_for('main.logout') }}'" class="w-full flex items-center justify-center p-3 bg-[#1a4d4d] hover:bg-[#143d3d] rounded-lg transition-all hover:shadow-md"><span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 flex-1 p-8">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-800"> Notifications</h1>
+            
+        </div>
+
+        <!-- Alerts Table -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden card-shadow p-6">
+            <div class="flex justify-between items-center mb-6">
+                <button class="px-4 py-2 bg-[#2C7A7B] text-white rounded-lg hover:bg-[#235f5f] transition-colors" onclick="location.reload();">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
+
+            <div class="overflow-x-auto scrollbar-custom">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr class="text-left text-gray-500 font-medium">
+                            <th class="px-6 py-3">Complaint ID</th>
+                            <th class="px-6 py-3">Emotion</th>
+                            <th class="px-6 py-3">Priority</th>
+                            <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3">Alert Status</th>
+                            <th class="px-6 py-3">Submission Time</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for item in alert_data %}
+                        <tr class="hover:bg-gray-50 transition-colors {% if item.alert.alert_status == 'read' %}opacity-60{% endif %}">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ item.complaint.complaint_id if item.complaint else 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    {% if item.detection %}
+                                        {% if item.detection.primary_emo == 'happy' %}
+                                            <i class="fas fa-smile text-yellow-400 emotion-icon"></i>
+                                        {% elif item.detection.primary_emo == 'sad' %}
+                                            <i class="fas fa-sad-tear text-blue-400 emotion-icon"></i>
+                                        {% elif item.detection.primary_emo == 'angry' %}
+                                            <i class="fas fa-angry text-red-400 emotion-icon"></i>
+                                        {% else %}
+                                            <i class="fas fa-meh text-gray-400 emotion-icon"></i>
+                                        {% endif %}
+                                        {{ item.detection.primary_emo }}
+                                    {% else %}
+                                        <i class="fas fa-question-circle text-gray-400 emotion-icon"></i> N/A
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if item.complaint and item.complaint.priority_level %}
+                                    <span class="badge priority-{{ item.complaint.priority_level }}">
+                                        {% if item.complaint.priority_level == 'high' %}
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        {% elif item.complaint.priority_level == 'medium' %}
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        {% else %}
+                                            <i class="fas fa-info-circle"></i>
+                                        {% endif %}
+                                        {{ item.complaint.priority_level }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-gray-100 text-gray-600">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if item.complaint %}
+                                    <span class="badge status-{{ item.complaint.complaint_status.replace('_', '') }}">
+                                        {{ item.complaint.complaint_status }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-gray-100 text-gray-600">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if item.alert.alert_status == 'active' %}
+                                    <select class="badge bg-blue-100 text-blue-800 cursor-pointer" onchange="updateAlertStatus('{{ item.alert.alert_id }}', this.value)">
+                                        <option value="active" {% if item.alert.alert_status == 'active' %}selected{% endif %}>active</option>
+                                        <option value="read">read</option>
+                                    </select>
+                                {% else %}
+                                    <span class="badge bg-green-100 text-green-800">read</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">
+                                {{ item.alert.alert_timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">No alerts found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function updateAlertStatus(alertId) {
+    fetch(`/update_alert_status/${alertId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'read' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Alert status updated!');
+            location.reload();
+        } else {
+            alert('Failed to update alert status: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+    </script>
+
+    <script src="{{ url_for('static', filename='Admin/JAVASCRIPT/logout.js') }}"></script>
+</body>
+</html>
