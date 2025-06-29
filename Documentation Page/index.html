@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion-Aware AI Complaint Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Optional: Google Fonts for a more modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Optional: Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="AIU logo.png" type="image/x-icon">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>Documentation</h2>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#project-overview"><i class="fas fa-info-circle"></i> Project Overview</a></li>
+            <li><a href="#system-architecture"><i class="fas fa-sitemap"></i> System Architecture</a></li>
+            <li><a href="#technology-stack"><i class="fas fa-layer-group"></i> Technology Stack</a></li>
+            <li><a href="#model-details"><i class="fas fa-brain"></i> Model Details</a></li>
+            <li><a href="#setup-and-installation"><i class="fas fa-cogs"></i> Setup & Installation</a></li>
+            <li><a href="#api-reference"><i class="fas fa-code"></i> API Reference</a></li>
+            <li><a href="#demonstration"><i class="fas fa-video"></i> Demonstration</a></li>
+            <li><a href="#contribution-guidelines"><i class="fas fa-handshake"></i> Contribution Guidelines</a></li>
+            <li><a href="#licensing"><i class="fas fa-file-contract"></i> Licensing</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <br>
+            <p class="alignment"><a href="https://github.com/Emotion-Aware-AI-Support-System" target="_blank">GitHub Repository</a> | <a href="https://saky.space">Contact</a></p>
+            <p class="alignment">Developed by: Rania | Saky | Ahmed</p>
+            <p class="alignment">© All Rights Reserved — 2025</p>
+
+        </div>
+    </nav>
+    <main class="content">
+        <header class="navbar">
+            <h1>Emotion-Aware AI Complaint Management System</h1>
+        </header>
+
+        <section id="project-overview" class="doc-section">
+            <h2>1. Project Overview</h2>
+            <p class="alignment">The Emotion-Aware AI Complaint Management System represents a pioneering voice-based application meticulously engineered to significantly enhance student well-being within educational institutions. This innovative platform provides university students with a secure and intuitive channel to articulate their concerns through voice recordings. These recordings undergo sophisticated analysis utilizing a deep learning-driven emotion recognition model, which accurately identifies the speaker's underlying emotional state.</p>
+            <p class="alignment">By discerning emotional cues such as anger, fear, sadness, happiness, or neutrality, the system intelligently assesses the inherent urgency of each complaint. This assessment facilitates the automatic classification of complaints into distinct priority levels. For instance, a complaint imbued with emotions indicative of distress, such as anger or fear, is automatically escalated to a high-priority status. This proactive flagging mechanism empowers university counselors, administrators, and relevant support staff to initiate prompt, informed, and empathetic interventions, thereby fostering a more responsive and supportive academic environment.</p>
+            <img src="medias/home.png" alt="" width="100%">
+            <h3>Core Functional Modules:</h3>
+            <p class="alignment">The system is architected on a robust modular framework, with each module meticulously designed to execute a critical function within the complaint management lifecycle:</p>
+            <ul>
+                <li><strong>Voice Capture & Submission:</strong> Facilitates the seamless recording and uploading of audio complaints via a user-friendly web interface, ensuring accessibility and ease of use for all students.</li>
+                <li><strong>Audio Preprocessing & Feature Extraction:</strong> Employs advanced digital signal processing techniques to clean and normalize raw audio data. This includes noise reduction and the extraction of salient acoustic features crucial for accurate emotion detection.</li>
+                <li><strong>Emotion Recognition Engine:</strong> Leverages a sophisticated Convolutional Neural Network (CNN) model, rigorously trained on diverse and extensive emotional speech datasets (including RAVDESS, CREMA-D+, and TESS), to precisely identify and classify emotions from processed speech signals.</li>
+                <li><strong>Intelligent Complaint Prioritization:</strong> Dynamically categorizes incoming complaints into predefined priority tiers (e.g., High, Medium, Low) based on the intensity and nature of the detected emotional content, ensuring critical issues receive immediate attention.</li>
+                <li><strong>Real-Time Alerting & Notification System:</strong> Implements an efficient notification mechanism that dispatches instant alerts to designated university personnel (e.g., counselors, administrative staff) for complaints identified as high-priority, enabling rapid response.</li>
+                <li><strong>Automated Report Generation:</strong> Generates comprehensive, detailed PDF reports for each processed complaint. These reports encapsulate critical information such as transcription, emotion scores, confidence levels, and relevant user metadata, serving as invaluable documentation for follow-up actions.</li>
+                <li><strong>Security & Access Management:</strong> Incorporates stringent security protocols and access control mechanisms to safeguard sensitive student information. This ensures that only authorized individuals (e.g., students for their own complaints, administrators for oversight) can access and manage data, maintaining privacy and compliance.</li>
+            </ul>
+            <p class="alignment">Ultimately, this system endeavors to bridge the communication gap between students' emotional states and institutional responsiveness. It is particularly beneficial for individuals who may find traditional complaint submission methods challenging or intimidating. By offering a non-intrusive, intelligent, and empathetic platform, the Emotion-Aware AI Complaint Management System empowers universities to proactively address mental health challenges, mitigate potential crises, and cultivate a safer, more inclusive, and supportive learning environment for their entire student body.</p>
+        </section>
+
+        <section id="system-architecture" class="doc-section">
+            <h2>2. System Architecture: Modular Design for Scalability and Efficiency</h2>
+            <p class="alignment">The Emotion-Aware AI Complaint Management System is meticulously engineered with a modular architecture, a design philosophy chosen to ensure unparalleled scalability, maintainability, and seamless integration across all operational components. The system is logically segmented into seven distinct core modules, each assigned specific responsibilities within the comprehensive end-to-end complaint analysis and management workflow.</p>
+
+            <h3>Architectural Components and Workflow:</h3>
+            <ol>
+                <li><strong>Voice Input Collection Module:</strong>
+                    <p class="alignment">This module serves as the primary interface for user interaction. Students can effortlessly upload their audio complaints through a dedicated web-based portal. The module is designed to accommodate various audio formats (e.g., <code>.wav</code>, <code>.mp3</code>, <code>.ogg</code>), ensuring broad compatibility and preparing the raw audio data for subsequent processing stages.</p>
+                </li>
+                <li><strong>Audio Preprocessing & Feature Extraction Module:</strong>
+                    <p class="alignment">Upon receipt of an audio input, this module initiates a sophisticated preprocessing pipeline. Key operations include:</p>
+                    <ul>
+                        <li><strong>Noise Reduction:</strong> Advanced algorithms, leveraging spectral flatness and RMS thresholds, are applied to minimize background noise and enhance audio clarity.</li>
+                        <li><strong>Segmentation:</strong> Audio streams are intelligently segmented into manageable 2.5-second chunks, optimizing them for efficient processing by the emotion detection model.</li>
+                        <li><strong>Feature Extraction:</strong> Critical acoustic features are extracted to represent the emotional content of the speech. These include:
+                            <ul>
+                                <li><strong>MFCC (Mel-Frequency Cepstral Coefficients):</strong> Captures the spectral envelope of the sound, mimicking human auditory perception.</li>
+                                <li><strong>ZCR (Zero Crossing Rate):</strong> Indicates the rate at which the speech signal changes sign, providing insights into the noisiness and tonality.</li>
+                                <li><strong>RMSE (Root Mean Square Energy):</strong> Measures the short-term energy of the audio signal, reflecting loudness and intensity.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p class="alignment">These extracted features are subsequently standardized and encoded, ensuring a consistent and optimized input format for the machine learning model.</p>
+                </li>
+                <li><strong>Emotion Detection Engine (CNN-Based):</strong>
+                    <p class="alignment">At the very core of the system's intelligence lies a highly optimized Convolutional Neural Network (CNN). This CNN model has been rigorously trained on a diverse array of emotional speech datasets (e.g., RAVDESS, TESS, CREMA-D+), enabling it to accurately process the preprocessed audio features. The output of this module is a probabilistic distribution across predefined emotion categories, including angry, sad, fear, happy, and neutral, providing a nuanced understanding of the speaker's emotional state.</p>
+                </li>
+                <li><strong>Emotion Intensity-Based Complaint Classification Module:</strong>
+                    <p class="alignment">Leveraging the primary emotion detected by the CNN, this module automatically assigns a priority level to each complaint. The classification logic is as follows:</p>
+                    <ul>
+                        <li><strong>High Priority:</strong> Typically assigned to complaints associated with intense emotions such as anger or fear, necessitating immediate attention.</li>
+                        <li><strong>Medium Priority:</strong> Often linked to neutral emotional states, indicating a standard processing urgency.</li>
+                        <li><strong>Low Priority:</strong> May be assigned to complaints with emotions like happiness, suggesting a less urgent or positive feedback context.</li>
+                    </ul>
+                    <p class="alignment">This intelligent classification mechanism directly influences the urgency and subsequent response actions undertaken by institutional staff.</p>
+                </li>
+                <li><strong>Alert and Notification System:</strong>
+                    <p class="alignment">An integrated, real-time alerting mechanism is a critical component, designed to ensure that high-priority complaints are immediately brought to the attention of designated university counselors or administrators. All notifications are securely stored within the system and are readily accessible via a dedicated administrative dashboard, providing a comprehensive audit trail.</p>
+                </li>
+                <li><strong>Automated Report Generation and Visualization Module:</strong>
+                    <p class="alignment">For every processed complaint, this module automatically generates a comprehensive PDF report. Each report is a detailed compendium of information, including:</p>
+                    <ul>
+                        <li>Student metadata (anonymized where appropriate)</li>
+                        <li>Precise complaint timestamp</li>
+                        <li>Detailed emotion scores and confidence levels</li>
+                        <li>Accurate audio transcription</li>
+                    </ul>
+                    <p class="alignment">These reports are securely saved on the server and can be downloaded by authorized users, facilitating offline analysis, record-keeping, and accountability.</p>
+                </li>
+                <li><strong>Security and Privacy Enforcement Module:</strong>
+                    <p class="alignment">This module implements robust security measures to ensure the confidentiality, integrity, and availability of all sensitive data. Key features include:</p>
+                    <ul>
+                        <li><strong>Authentication:</strong> Strict authentication protocols ensure that only authorized users (students for their data, administrators for system oversight) can access the platform.</li>
+                        <li><strong>Session Management:</strong> User sessions are securely managed using Flask-Login, preventing unauthorized access and session hijacking.</li>
+                        <li><strong>Data Encryption:</strong> Sensitive information is encrypted both in transit and at rest, providing an additional layer of protection.</li>
+                        <li><strong>Access Control:</strong> Granular access control mechanisms restrict data visibility and functionality based on user roles.</li>
+                        <li><strong>Audit Trails:</strong> Comprehensive logging ensures data integrity and provides an auditable record of all system interactions.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>System Integration Overview:</h3>
+            <p class="alignment">The system's various components are seamlessly integrated to form a cohesive and efficient application:</p>
+            <ul>
+                <li><strong>Backend:</strong> Developed using the Flask micro-framework, responsible for handling HTTP requests, managing API logic, facilitating database interactions, and executing machine learning model inference.</li>
+                <li><strong>Frontend:</strong> Constructed with standard web technologies (HTML, CSS, JavaScript) and Jinja templating, providing a dynamic, responsive, and intuitive user interface.</li>
+                <li><strong>Database:</strong> PostgreSQL serves as the robust and scalable relational database, securely storing user profiles, complaint records, model results, and comprehensive system logs.</li>
+                <li><strong>Deployment Readiness:</strong> The modular architecture inherently supports containerization (e.g., Docker), enabling straightforward and consistent deployment across various cloud platforms such as Heroku, Render, or AWS, ensuring high availability and scalability in production environments.</li>
+            </ul>
+            <div class="visual-placeholder">
+                <h4 align="center">System Architecture Diagram</h4>
+                <img src="medias/system architecture.png" alt="System Architecture Diagram" width="100%">
+            </div>
+            <div class="visual-placeholder">
+                <h4 align="center">Use Case Diagram</h4>
+                <img src="medias/use case.png" alt="Use Case Diagram" width="100%">
+            </div>
+            <div class="visual-placeholder">
+                <h4 align="center">Activity Diagram</h4>
+                <img src="medias/activity diagram.png" alt="Activity Diagram" width="100%">
+            </div>
+            <div class="visual-placeholder">
+                <h4 align="center">System Flow Diagram</h4>
+                <img src="medias/system flow.png" alt="System Flow Diagram" width="100%">
+            </div>
+        </section>  
+
+        <section id="technology-stack" class="doc-section">
+            <h2>3. Technology Stack: Robust and Scalable Foundations</h2>
+            <p class="alignment">The development of the Emotion-Aware AI Complaint Management System is underpinned by a carefully selected, robust, and modular technology stack. This stack integrates cutting-edge web development tools, advanced audio processing libraries, powerful machine learning frameworks, and scalable deployment capabilities, ensuring the system's high performance, reliability, and future extensibility. Below is a detailed breakdown of the key technologies employed across different layers of the system architecture:</p>
+
+            <h3>Frontend Technologies: Crafting an Intuitive User Experience</h3>
+            <ul>
+                <li><strong>HTML5:</strong> Serves as the foundational markup language, providing the semantic structure for the web interface. Its modern features ensure cross-browser compatibility and accessibility.</li>
+                <li><strong>Tailwind CSS:</strong> A highly efficient, utility-first CSS framework utilized for rapidly designing responsive and visually consistent user interfaces. Its atomic classes enable precise styling with minimal custom CSS, promoting maintainability and scalability of the frontend design.</li>
+                <li><strong>JavaScript:</strong> The primary scripting language powering the interactive and dynamic elements of the platform. It facilitates real-time input validation, asynchronous form submissions, and enhances overall user engagement through dynamic content manipulation.</li>
+                <li><strong>Chart.js:</strong> An open-source JavaScript library specifically integrated for data visualization. It is employed to render aesthetically appealing and highly informative graphs, effectively visualizing emotion detection results and complaint trends, thereby providing actionable insights at a glance.</li>
+            </ul>
+
+            <h3>Backend Technologies: Powering Core System Logic</h3>
+            <ul>
+                <li><strong>Python:</strong> The core programming language chosen for server-side development, machine learning model inference, and overall system integration. Python's extensive ecosystem and readability contribute to rapid development and maintainability.</li>
+                <li><strong>Flask:</strong> A lightweight yet exceptionally powerful micro-web framework. Flask is instrumental in handling HTTP requests, defining API routes, managing server-side logic, and rendering dynamic HTML templates, providing a flexible and efficient backend foundation.</li>
+                <li><strong>Flask-Login:</strong> An essential extension for Flask applications, dedicated to managing user authentication, maintaining secure user sessions, and implementing robust access control mechanisms for both student and administrative roles, ensuring data security and role-based access.</li>
+                <li><strong>SQLAlchemy:</strong> Functions as the Object Relational Mapper (ORM), providing a powerful and flexible interface for interacting with the database. SQLAlchemy abstracts away raw SQL queries, allowing developers to work with Python objects, which streamlines database operations and enhances code readability and maintainability.</li>
+            </ul>
+
+            <h3>Machine Learning & Audio Analysis: The Intelligence Core</h3>
+            <ul>
+                <li><strong>TensorFlow:</strong> The leading open-source machine learning framework used for building, training, and deploying the Convolutional Neural Network (CNN) model. TensorFlow's robust capabilities enable efficient development and serving of the speech emotion recognition engine.</li>
+                <li><strong>scikit-learn:</strong> A comprehensive machine learning library employed for various preprocessing tasks. Specifically, it is used for feature standardization (e.g., <code>StandardScaler</code>) to normalize data distributions and label encoding (e.g., <code>OneHotEncoder</code>) to prepare categorical data for model training.</li>
+                <li><strong>Librosa:</strong> A powerful Python library specifically designed for audio and music analysis. Librosa is extensively utilized for extracting critical speech features, including Mel-Frequency Cepstral Coefficients (MFCCs), zero-crossing rate, spectral features, and Root Mean Square Energy (RMSE), which are vital inputs for the emotion recognition model.</li>
+                <li><strong>PyDub:</strong> A simple yet effective Python audio manipulation library. PyDub is used to handle various audio format conversions, ensuring compatibility across different input sources and maintaining consistency for model processing.</li>
+                <li><strong>Noisereduce:</strong> An audio processing library dedicated to applying spectral noise reduction techniques. Its integration significantly improves audio clarity by minimizing background noise, thereby enhancing the accuracy and reliability of emotion predictions.</li>
+            </ul>
+
+            <h3>Database Layer: Persistent Data Management</h3>
+            <ul>
+                <li><strong>PostgreSQL:</strong> A highly reliable, open-source, and advanced relational database management system. PostgreSQL is chosen for its robust capabilities in securely storing all application data, including user information, detailed complaint records, machine learning detection results, and comprehensive system logs. Its strong support for complex queries, data integrity, and scalability makes it an ideal choice for this application.</li>
+            </ul>
+
+            <h3>Deployment & Scalability: Ensuring Operational Excellence</h3>
+            <ul>
+                <li><strong>Docker-Compatible:</strong> The application's architecture is inherently designed with containerization principles in mind. This compatibility enables seamless packaging and deployment using Docker containers, ensuring environmental consistency from development to production and simplifying deployment workflows.</li>
+                <li><strong>Cloud Extensible:</strong> The system is built to be fully compatible with major cloud computing platforms, including Amazon Web Services (AWS) and Google Cloud Platform (GCP). This extensibility allows for flexible and scalable hosting solutions, efficient model serving, and robust database integration in high-demand production environments.</li>
+            </ul>
+        </section>
+
+        <section id="model-details" class="doc-section">
+            <h2>4. Model Details: Deep Learning for Speech Emotion Recognition</h2>
+            <p class="alignment">The analytical core of the Emotion-Aware AI Complaint Management System is a sophisticated deep learning-based Speech Emotion Recognition (SER) model. This model has been meticulously designed and rigorously trained to accurately identify and interpret emotional cues embedded within voice inputs, ensuring high precision and reliability in its predictions. Below is a comprehensive overview of the model’s architecture, its training methodology, and key technical specifications.</p>
+
+            <h3>Dataset Integration: Comprehensive Training for Robustness</h3>
+            <p class="alignment">To ensure the model's ability to generalize across diverse vocal characteristics and emotional expressions, it has been trained on a synergistic combination of three widely recognized and emotionally rich speech datasets:</p>
+            <ul>
+                <li><strong>RAVDESS (Ryerson Audio-Visual Database of Emotional Speech and Song):</strong> Provides a broad spectrum of emotional expressions from professional actors.</li>
+                <li><strong>CREMA-D+ (Crowd-sourced Emotional Multimodal Actors Dataset):</strong> Offers a diverse range of emotional speech from various demographic backgrounds.</li>
+                <li><strong>TESS (Toronto Emotional Speech Set):</strong> Contributes clear and distinct emotional utterances, enhancing the model's ability to differentiate subtle emotional nuances.</li>
+            </ul>
+            <p class="alignment">The integration of these datasets collectively contributes to a balanced and comprehensive representation of emotions across variations in gender, age, and speaking style. This multi-dataset approach significantly enhances the model's generalization capabilities, making it robust to real-world variations in speech.</p>
+
+            <h3>Emotion Classes: Targeted Emotional Categorization</h3>
+            <p class="alignment">The model is engineered to classify audio inputs into the following five primary emotional categories, which were strategically selected for their direct relevance in assessing distress levels and stability within student complaints:</p>
+            <ul>
+                <li>Sadness</li>
+                <li>Anger</li>
+                <li>Fear</li>
+                <li>Happiness</li>
+                <li>Neutrality</li>
+            </ul>
+
+            <h3>Model Architecture: 1D Convolutional Neural Network (CNN)</h3>
+            <p class="alignment">The emotion classifier is built upon a 1D Convolutional Neural Network (CNN) architecture. This specific design is optimally suited for processing time-series data, such as audio signals, due to its inherent ability to capture temporal dependencies and local patterns. The architecture is designed to be lightweight yet sufficiently expressive to discern intricate temporal patterns and acoustic features within speech.</p>
+            <ul>
+                <li>The <strong>1D-CNN layers</strong> are responsible for extracting spatial features from sequential audio frames, effectively learning hierarchical representations of the input.</li>
+                <li>These convolutional layers are followed by <strong>dense (fully connected) layers</strong>, which perform the final classification. A <strong>softmax activation function</strong> is applied to the output layer, yielding probabilistic scores for each emotion category.</li>
+            </ul>
+            <p class="alignment">This optimized architecture ensures rapid inference times while maintaining exceptional precision in emotion classification.</p>
+
+            <h3>Performance Metrics: Validated Accuracy and Robustness</h3>
+            <ul>
+                <li><strong>Test Accuracy:</strong> The model consistently achieves an approximate accuracy of 99% on the validation set. This high performance metric underscores its excellent generalization capabilities to unseen and real-world audio data.</li>
+                <li><strong>Evaluation Metrics:</strong> Comprehensive evaluation of the model's performance across different emotion categories is conducted using standard metrics, including:
+                    <ul>
+                        <li><strong>Accuracy:</strong> Overall correctness of predictions.</li>
+                        <li><strong>Precision:</strong> The proportion of true positive predictions among all positive predictions.</li>
+                        <li><strong>Recall:</strong> The proportion of true positive predictions among all actual positive instances.</li>
+                        <li><strong>Confusion Matrix:</strong> Provides a detailed breakdown of correct and incorrect classifications for each emotion class, offering insights into potential misclassifications.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Feature Extraction: Capturing Acoustic Nuances</h3>
+            <p class="alignment">To effectively capture the subtle and overt emotional characteristics embedded within speech, the model leverages a set of carefully selected acoustic features:</p>
+            <ul>
+                <li><strong>MFCCs (Mel-Frequency Cepstral Coefficients):</strong> These coefficients encode the power spectrum of speech on a non-linear Mel scale, closely mimicking the human auditory system's perception of sound. They are highly effective in representing the timbre of speech.</li>
+                <li><strong>ZCR (Zero Crossing Rate):</strong> This feature quantifies the rate at which the speech signal changes its sign. It is a strong indicator of the noisiness and tonality of the speech, often correlating with the energy and pitch of the utterance.</li>
+                <li><strong>RMSE (Root Mean Square Energy):</strong> Represents the short-term energy of the audio signal. It is a crucial feature for indicating the loudness and overall energy of the voice, which can be indicative of emotional intensity.</li>
+            </ul>
+            <p class="alignment">These extracted features undergo standardization using a pre-fitted scaler to ensure a consistent input format, which is then fed into the deep learning model for emotion classification.</p>
+
+            <h3>Audio Processing & Chunking: Handling Variable Inputs</h3>
+            <ul>
+                <li>Incoming audio inputs are systematically preprocessed and segmented into uniform 5-second chunks. This standardized chunking is vital for consistent model input.</li>
+                <li>Each segment is analyzed independently by the emotion recognition model. The predictions from individual chunks are then aggregated, significantly enhancing the overall robustness and temporal consistency of the emotion detection for longer or variable-length audio inputs. This technique effectively mitigates performance degradation often associated with unconstrained audio durations.</li>
+            </ul>
+            
+            <h3>Evaluation</h3>
+            <img src="medias/evaluation.png" alt="" width="100%">
+            <p class="alignment">The accuracy plot demonstrates a clear upward trend for both training and validation datasets over
+50 epochs. Initially, the model showed rapid improvement, reaching over 90% accuracy by epoch
+15. From epochs 20 to 50, both curves stabilize above 95%, indicating consistent learning with no
+significant overfitting. By the final epoch, training accuracy approaches 0.99, and validation
+accuracy mirrors this trend closely, demonstrating excellent generalization capability.</p>
+
+        </section>
+
+        <section id="setup-and-installation" class="doc-section">
+            <h2>5. Setup and Installation: Getting Started Locally</h2>
+            <p class="alignment">This section provides comprehensive instructions for setting up and running the Emotion-Aware AI Complaint System on your local development environment. Please follow these steps carefully to ensure a smooth installation process.</p>
+
+            <h3>1. Clone the Repository</h3>
+            <p class="alignment">Begin by cloning the project repository from GitHub to your local machine using the following command:</p>
+            <pre><code class="language-bash">git clone https://github.com/saky-semicolon/Emotion-Aware-AI-Support-System.git
+cd Emotion-Aware-AI-Support-System</code></pre>
+
+            <h3>2. Install Required Python Dependencies</h3>
+            <p class="alignment">It is highly recommended to create a dedicated Python virtual environment to manage project dependencies. This prevents conflicts with other Python projects on your system. Execute the following commands:</p>
+            <pre><code class="language-bash">python3 -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+pip install -r requirements.txt</code></pre>
+            <p class="alignment">This will install all necessary Python libraries listed in the <code>requirements.txt</code> file.</p>
+
+            <h3>3. Install FFmpeg</h3>
+            <p class="alignment">FFmpeg is an essential tool for audio processing within the system. Install it globally on your system. For Debian/Ubuntu-based systems, use:</p>
+            <pre><code class="language-bash">sudo apt update
+sudo apt install ffmpeg</code></pre>
+            <p class="alignment">For other operating systems, please refer to the official FFmpeg documentation for installation instructions. Verify the installation by running:</p>
+            <pre><code class="language-bash">ffmpeg -version</code></pre>
+            <p class="alignment">Ensure the command executes successfully and displays version information.</p>
+
+            <h3>4. Configure PostgreSQL Database</h3>
+            <p class="alignment">The system utilizes PostgreSQL as its primary database. Ensure PostgreSQL is installed and running on your machine. Then, perform the following database configurations:</p>
+            <ul>
+                <li>Create a new database for the application (e.g., <code>fyp</code>).</li>
+                <li>Create a dedicated PostgreSQL user with appropriate privileges for this database (e.g., <code>flask_user</code>).</li>
+                <li>Configure your environment variables or update the <code>config.py</code> (if present) or <code>.env</code> file with your database credentials. An example <code>.env</code> configuration is shown below:</li>
+            </ul>
+            <pre><code class="language-env">DB_NAME=fyp
+DB_USER=flask_user
+DB_PASSWORD=your_password
+DB_HOST=localhost
+DB_PORT=5432</code></pre>
+            <p class="alignment">Replace <code>your_password</code> with the actual password for your PostgreSQL user.</p>
+
+            <h3>5. Apply Database Migrations</h3>
+            <p class="alignment">After configuring the database, apply the latest database schema changes using Flask-Migrate (or similar tool, if configured differently in the project):</p>
+            <pre><code class="language-bash">flask db upgrade</code></pre>
+            <p class="alignment">This command will synchronize your database schema with the application's models.</p>
+
+            <h3>6. Launch the Application</h3>
+            <p class="alignment">With all dependencies installed and the database configured, you can now launch the Flask development server:</p>
+            <pre><code class="language-bash">python run.py</code></pre>
+            <p class="alignment">The application will typically become accessible at <code>http://127.0.0.1:5000</code> in your web browser.</p>
+        </section>
+
+        <section id="api-reference" class="doc-section">
+            <h2>6. API Reference: System Endpoints</h2>
+            <p class="alignment">The Emotion-Aware AI Complaint Management System exposes a set of RESTful API endpoints to facilitate interaction with its core functionalities. Below is a detailed reference for each primary endpoint, including its purpose, HTTP method, and expected behavior.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Request Body / Parameters</th>
+                        <th>Response</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/api/predict</code></td>
+                        <td><code>POST</code></td>
+                        <td>Upload an audio file for emotion prediction.</td>
+                        <td><code>multipart/form-data</code> with an audio file (e.g., <code>audio.wav</code>)</td>
+                        <td>JSON object containing predicted emotion, confidence scores, and transcription.</td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/respond</code></td>
+                        <td><code>POST</code></td>
+                        <td>Submit feedback or responses related to a complaint.</td>
+                        <td><code>application/json</code> with fields like <code>complaint_id</code>, <code>response_text</code>, <code>user_id</code>.</td>
+                        <td>JSON object indicating success or failure of the submission.</td>
+                    </tr>
+                    <tr>
+                        <td><code>/download_report/&lt;id&gt;</code></td>
+                        <td><code>GET</code></td>
+                        <td>Download the comprehensive emotion analysis report for a specific complaint.</td>
+                        <td>Path parameter: <code>id</code> (unique identifier of the complaint).</td>
+                        <td>PDF file of the report.</td>
+                    </tr>
+                    <tr>
+                        <td><code>/admin/*</code></td>
+                        <td><code>GET</code></td>
+                        <td>Access various administrative dashboards and manage complaints.</td>
+                        <td>(Requires authentication and appropriate admin roles)</td>
+                        <td>HTML content of the admin dashboard or specific management interface.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="alignment">All API endpoints are designed to be RESTful and primarily accept standard <code>application/json</code> or <code>multipart/form-data</code> formats where applicable, ensuring broad compatibility with client applications.</p>
+        </section>
+
+        <section id="demonstration" class="doc-section">
+            <h2>7. Demonstration: Visualizing the System in Action</h2>
+            <p class="alignment">To provide a comprehensive understanding of the Emotion-Aware AI Complaint Management System's capabilities and user experience, a dedicated demonstration video has been prepared. This video visually walks through the system's functionalities from end-to-end.</p>
+
+            <h3>🎥 Video Title:</h3>
+            <p class="alignment"><strong>Emotion-Aware AI Complaint System Demo | Voice-Based Student Wellbeing App</strong></p>
+
+            <h3>📄 Description:</h3>
+            <p class="alignment">This demonstration video offers an in-depth showcase of the full functionality of our intelligent voice-based complaint handling system, specifically developed for higher education institutions. The platform is designed to capture student voice inputs, perform real-time analysis of emotional content using a sophisticated CNN-based speech emotion recognition model, and automatically prioritize complaints based on detected emotional distress levels. Furthermore, the system supports automated PDF report generation, real-time administrative alerts, and comprehensive complaint tracking capabilities. The entire system is robustly built using Python, Flask, TensorFlow, and PostgreSQL, seamlessly integrated with modern web technologies to deliver a responsive and intuitive user experience.</p>
+            
+            <iframe width="660" height="415" src="https://www.youtube.com/embed/53eVlWif4LI?si=17qNna5sQzAeC0O7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </section>
+
+        <section id="contribution-guidelines" class="doc-section">
+            <h2>8. Contribution Guidelines: Extending the System</h2>
+            <p class="alignment">We warmly welcome and encourage contributions from the community that align with the overarching mission and technical vision of this project. Your contributions can help improve the system, add new features, or enhance existing functionalities. Please adhere to the following guidelines to ensure a smooth and effective contribution process:</p>
+
+            <h3>Contribution Workflow:</h3>
+            <ol>
+                <li><strong>Fork and Clone:</strong>
+                    <p class="alignment">Begin by forking the main repository on GitHub. After forking, clone your personal fork to your local development machine:</p>
+                    <pre><code class="language-bash">git clone https://github.com/saky-semicolon/Emotion-Aware-AI-Support-System.git
+cd Emotion-Aware-AI-Support-System</code></pre>
+                </li>
+                <li><strong>Create a Feature Branch:</strong>
+                    <p class="alignment">Before making any changes, create a new Git branch for your feature or bug fix. This keeps your changes isolated and makes the pull request process cleaner:</p>
+                    <pre><code class="language-bash">git checkout -b feature/your-feature-name</code></pre>
+                    <p class="alignment">Choose a descriptive name for your branch (e.g., <code>feature/add-email-notifications</code>, <code>bugfix/login-issue</code>).</p>
+                </li>
+                <li><strong>Code Standards:</strong>
+                    <p class="alignment">Write clean, modular, and well-documented code. Please adhere to Python's <a href="https://www.python.org/dev/peps/pep-0008/" target="_blank">PEP 8 style guide</a> for consistency. Ensure your code is readable and follows established patterns within the project.</p>
+                </li>
+                <li><strong>Commit Best Practices:</strong>
+                    <p class="alignment">Make atomic commits with clear and concise commit messages. Your commit message should summarize the changes made. Use imperative mood (e.g., "Add: new feature" instead of "Added new feature").</p>
+                    <pre><code class="language-bash">git add .
+git commit -m "Add: concise summary of your changes"
+git push origin feature/your-feature-name</code></pre>
+                </li>
+                <li><strong>Submit a Pull Request (PR):</strong>
+                    <p class="alignment">Once your changes are complete and thoroughly tested, push your feature branch to your GitHub fork and then open a Pull Request against the <code>main</code> branch of the original repository. Provide a descriptive summary of your changes in the PR description and tag relevant reviewers if necessary.</p>
+                </li>
+            </ol>
+            <p class="alignment"><strong>Important:</strong> Please ensure that all existing automated tests pass, and if you've added new features, include corresponding unit or integration tests. This helps maintain the stability and reliability of the system.</p>
+        </section>
+
+        <section id="licensing" class="doc-section">
+            <h2>9. Licensing</h2>
+            <p class="alignment">This project is released under the <a href="https://opensource.org/license/mit/" target="_blank">MIT License</a>, which allows for wide usage, modification, and distribution of the code. Below are the key points regarding the licensing and intellectual property rights:</p>
+            <p class="alignment"><strong>© All Rights Reserved — 2025</strong></p>
+            <p class="alignment"><strong>Developed by:</strong> Rania Kherba, S M Asiful Islam Saky, Ahmed Dugje Kadiri</p>
+            <p class="alignment">This project is licensed under the <a href="https://opensource.org/license/mit/" target="_blank">MIT License</a>. You are free to use, modify, and distribute this code under the terms of the license. However, please ensure that you retain the original copyright notice and include this license in any copies or substantial portions of the software.</p>
+            <p class="alignment">For any inquiries regarding the use of this project, please contact the authors via the project's GitHub repository or through the provided <a href="https://saky.space">Contact Information</a>. We appreciate your interest and contributions to the Emotion-Aware AI Complaint Management System.</p>
+        </section>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

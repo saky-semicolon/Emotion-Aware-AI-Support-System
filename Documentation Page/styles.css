@@ -1,0 +1,372 @@
+/* General Body and Typography */
+body, h1, h2, h3, h4, p, ul, ol, li, table, th, td, pre, code {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.7;
+    color: #2c3e50; /* Darker, professional text color */
+    background-color: #f8f9fa; /* Very light background for the page */
+    display: flex;
+    min-height: 100vh;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 280px;
+    background-color: #ffffff; /* Clean white background for sidebar */
+    border-right: 1px solid #e9ecef; /* Subtle border */
+    padding: 25px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* More pronounced, soft shadow */
+    height: 100vh;
+    position: fixed;
+    overflow-y: auto;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: width 0.3s ease;
+}
+
+.sidebar-header {
+    margin-bottom: 35px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.sidebar-header h2 {
+    color: #007bff; /* Primary blue for branding */
+    font-size: 28px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.sidebar-nav li a {
+    display: block;
+    padding: 14px 18px;
+    color: #495057; /* Muted grey for links */
+    text-decoration: none;
+    border-radius: 8px; /* More rounded corners */
+    margin-bottom: 10px;
+    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out, transform 0.1s ease-out;
+    font-size: 15.5px;
+    font-weight: 500;
+}
+
+.sidebar-nav li a:hover {
+    background-color: #e9f5ff; /* Lighter blue hover background */
+    color: #0056b3; /* Darker blue on hover */
+    transform: translateX(3px); /* Subtle slide effect */
+}
+
+.sidebar-nav li a.active {
+    background-color: #007bff; /* Solid blue for active link */
+    color: #ffffff; /* White text for active link */
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+}
+
+/* Main Content Area */
+.content {
+    margin-left: 320px; /* Adjusted space for sidebar + padding */
+    flex-grow: 1;
+    padding: 40px;
+    max-width: 1000px; /* Wider content area for better readability */
+    margin-right: auto;
+    margin-left: 320px; /* Keep it aligned with sidebar */
+}
+
+/* Navbar (Header) */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 25px 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 10px; /* More rounded corners */
+    position: sticky;
+    top: 20px; /* Slightly offset from top */
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* For potential future elements */
+}
+
+.navbar h1 {
+    font-size: 34px;
+    color: #2c3e50;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+/* Documentation Sections */
+.doc-section {
+    background-color: #ffffff;
+    padding: 45px;
+    margin-bottom: 35px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.doc-section:hover {
+    transform: translateY(-3px); /* Subtle lift on hover */
+}
+
+.doc-section h2 {
+    color: #007bff;
+    font-size: 32px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 18px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+}
+
+.doc-section h3 {
+    color: #34495e; /* Slightly lighter than main text */
+    font-size: 26px;
+    margin-top: 40px;
+    margin-bottom: 18px;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+}
+
+.doc-section h4 {
+    color: #556b8d;
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.doc-section p {
+    margin-bottom: 18px;
+    color: #34495e;
+    line-height: 1.8;
+}
+
+.doc-section ul,
+.doc-section ol {
+    margin-left: 30px;
+    margin-bottom: 20px;
+    line-height: 1.8;
+    color: #34495e;
+}
+
+.doc-section li {
+    margin-bottom: 10px;
+}
+
+/* Code Blocks */
+pre {
+    background-color: #282c34; /* Darker, professional code background */
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+    margin-bottom: 25px;
+    position: relative;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+pre code {
+    font-family: 'Fira Code', 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 14.5px;
+    color: #abb2bf; /* Light grey for code text */
+    display: block;
+    white-space: pre;
+}
+
+/* Inline Code */
+code {
+    font-family: 'Fira Code', 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 88%;
+    color: #e06c75; /* Reddish for inline code */
+    background-color: rgba(27, 31, 35, 0.05);
+    padding: 4px 7px;
+    border-radius: 5px;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+table th,
+table td {
+    border: 1px solid #e9ecef;
+    padding: 14px 18px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f1f3f5;
+    font-weight: 700;
+    color: #34495e;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+table tr:nth-child(even) {
+    background-color: #fdfdfe;
+}
+
+/* Links */
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .content {
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 220px;
+        padding: 20px 15px;
+    }
+
+    .sidebar-header h2 {
+        font-size: 24px;
+    }
+
+    .sidebar-nav li a {
+        padding: 12px 15px;
+        font-size: 14.5px;
+    }
+
+    .content {
+        margin-left: 260px;
+        padding: 30px;
+    }
+
+    .navbar h1 {
+        font-size: 30px;
+    }
+
+    .doc-section h2 {
+        font-size: 28px;
+    }
+
+    .doc-section h3 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #e9ecef;
+        box-shadow: none;
+        padding: 15px;
+    }
+
+    .sidebar-header {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+
+    .sidebar-header h2 {
+        font-size: 22px;
+    }
+
+    .sidebar-nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .sidebar-nav li a {
+        padding: 8px 12px;
+        margin: 5px;
+        font-size: 14px;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 20px;
+        margin-right: 0;
+        max-width: 100%;
+    }
+
+    .navbar {
+        position: relative;
+        margin-bottom: 20px;
+        padding: 15px 20px;
+        border-radius: 0;
+        top: 0;
+    }
+
+    .navbar h1 {
+        font-size: 24px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .doc-section {
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+
+    .doc-section h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .doc-section h3 {
+        font-size: 18px;
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+
+    pre {
+        padding: 15px;
+    }
+
+    pre code {
+        font-size: 13px;
+    }
+
+    table th,
+    table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+.alignment {
+    text-align: justify;
+}
