@@ -14,7 +14,12 @@
 <body>
     <nav class="sidebar">
         <div class="sidebar-header">
-            <h2>Documentation</h2>
+            <h2>DOCUMENTATION</h2>
+            <!-- Place this where you want the language selector to appear -->
+<div style="font-family: Arial, sans-serif;">
+  <!-- <label for="google_translate_element" style="margin-right: 5px; font-weight: bold;">🌐 Select Language:</label> -->
+  <div id="google_translate_element" style="display: inline-block;"></div>
+</div>
         </div>
         <ul class="sidebar-nav">
             <li><a href="#project-overview"><i class="fas fa-info-circle"></i> Project Overview</a></li>
@@ -671,5 +676,20 @@ SOFTWARE.
 
     </main>
     <script src="script.js"></script>
+   <!-- Google Translate script -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'bn,en,ar',  // Bengali, English, and Arabic
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+
+<!-- Load Google Translate -->
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
 </body>
 </html>

@@ -57,7 +57,7 @@ body {
     color: #495057; /* Muted grey for links */
     text-decoration: none;
     border-radius: 8px; /* More rounded corners */
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out, transform 0.1s ease-out;
     font-size: 15.5px;
     font-weight: 500;
@@ -372,4 +372,80 @@ a:hover {
 }
 .alignment-li {
     text-align: justify;
+}
+
+/* Google Translate Element Styling */
+#google_translate_element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0px 0px;
+    width: 90%;
+    padding: 7px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+#google_translate_element:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Style the Google Translate dropdown */
+#google_translate_element .goog-te-combo {
+    background: #ffffff;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.1);
+}
+
+#google_translate_element .goog-te-combo:hover {
+    border-color: #0056b3;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    transform: scale(1.02);
+}
+
+#google_translate_element .goog-te-combo:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Style the label text */
+#google_translate_element .goog-te-gadget-simple {
+    background: transparent !important;
+    border: none !important;
+    font-family: 'Inter', Arial, sans-serif !important;
+}
+
+#google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
+    color: #2c3e50 !important;
+    font-weight: 500 !important;
+}
+
+/* Hide the Google Translate banner */
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+body {
+    top: 0 !important;
+}
+
+/* Custom translate icon styling */
+#google_translate_element::before {
+    font-size: 20px;
+    display: inline-block;
 }
