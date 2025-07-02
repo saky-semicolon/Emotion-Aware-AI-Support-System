@@ -19,7 +19,7 @@ Through its emotion analysis, automated alerting system, interactive chatbot, re
 
 ## 3. Architecture Overview
 
-<img src="Documentation Page/medias/architecture.png" alt="Architecture Diagram" width="70%"/>
+<img src="Documentation Page/medias/architecture.png" alt="Architecture Diagram" width="30%"/>
 
 
 ## 4. Tech Stack
