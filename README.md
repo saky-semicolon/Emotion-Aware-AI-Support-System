@@ -1,6 +1,8 @@
 
 # Emotion-Aware AI Complaint Management System
 
+### Full Documentation available at: [Documentation Page](https://documentation-fyp.vercel.app/)
+
 A smart, speech-driven university support platform that prioritizes student wellbeing using real-time emotion recognition and complaint triaging.
 
 <img src="Documentation Page/medias/home.png" alt="Logo" width="100%"/>
