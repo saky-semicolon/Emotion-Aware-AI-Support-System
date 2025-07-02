@@ -3,7 +3,7 @@
 
 A smart, speech-driven university support platform that prioritizes student wellbeing using real-time emotion recognition and complaint triaging.
 
-<img src="Documentation Page/medias/home.png" alt="Logo" width="100"/>
+<img src="Documentation Page/medias/home.png" alt="Logo" width="100%"/>
 
 
 ## 1. Project Summary
@@ -19,7 +19,7 @@ Through its emotion analysis, automated alerting system, interactive chatbot, re
 
 ## 3. Architecture Overview
 
-<img src="Documentation Page/medias/architecture.png" alt="Architecture Diagram" width="600"/>
+<img src="Documentation Page/medias/architecture.png" alt="Architecture Diagram" width="70%"/>
 
 
 ## 4. Tech Stack
