@@ -3,7 +3,7 @@
 
 A smart, speech-driven university support platform that prioritizes student wellbeing using real-time emotion recognition and complaint triaging.
 
-<img src="Documentation Page/medias/gif/Homepage - Emotion Aware Support System.gif" alt="Logo" width="100"/>
+<img src="Documentation Page/medias/home.png" alt="Logo" width="100"/>
 
 
 ## 1. Project Summary
@@ -19,14 +19,7 @@ Through its emotion analysis, automated alerting system, interactive chatbot, re
 
 ## 3. Architecture Overview
 
-
-    A[Student Voice Input] --> B[Audio Preprocessing & Feature Extraction]
-    B --> C[CNN-based Emotion Recognition Model]
-    C --> D[Emotion Classification (Happy, Sad, Angry, etc.)]
-    D --> E[Complaint Priority Detection (High, Medium, Low)]
-    E --> F[Complaint Logging & Alert System]
-    F --> G[Admin Dashboard & Notification Panel]
-    G --> H[PDF Report Generation & Download]
+<img src="Documentation Page/medias/architecture.png" alt="Architecture Diagram" width="600"/>
 
 
 ## 4. Tech Stack
@@ -138,7 +131,7 @@ subject to the following conditions:
 
 ## 11. Authors & Contact
 
-- **S M Asiful Islam Saky** — [saky.space](https://saky.space)
+- [**S M Asiful Islam Saky**](https://saky.space)
 - **Rania Kherba**
 - **Ahmed Dugje Kadiri**
 
