@@ -10,9 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Optional: Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="AIU logo.png" type="image/x-icon">
-
-    <!-- Include this in your <head> or main stylesheet -->
+    <link rel="icon" href="{{ url_for('static', filename='AIU logo.png') }}" type="image/x-icon">
 <style>
   #feedback {
     padding: 2rem;
@@ -88,7 +86,6 @@
     margin-top: 3rem;
   }
 </style>
-
 </head>
 <body>
     <nav class="sidebar">
@@ -131,7 +128,7 @@
             <h2>1. Project Overview</h2>
             <p class="alignment">The Emotion-Aware AI Complaint Management System represents a pioneering voice-based application meticulously engineered to significantly enhance student well-being within educational institutions. This innovative platform provides university students with a secure and intuitive channel to articulate their concerns through voice recordings. These recordings undergo sophisticated analysis utilizing a deep learning-driven emotion recognition model, which accurately identifies the speaker's underlying emotional state.</p>
             <p class="alignment">By discerning emotional cues such as anger, fear, sadness, happiness, or neutrality, the system intelligently assesses the inherent urgency of each complaint. This assessment facilitates the automatic classification of complaints into distinct priority levels. For instance, a complaint imbued with emotions indicative of distress, such as anger or fear, is automatically escalated to a high-priority status. This proactive flagging mechanism empowers university counselors, administrators, and relevant support staff to initiate prompt, informed, and empathetic interventions, thereby fostering a more responsive and supportive academic environment.</p>
-            <img src="medias/home.png" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/home.png') }}" alt="Homepage Screenshot" width="100%">
             <h3>Core Functional Modules:</h3>
             <p class="alignment">The system is architected on a robust modular framework, with each module meticulously designed to execute a critical function within the complaint management lifecycle:</p>
             <ul>
@@ -217,19 +214,19 @@
             </ul>
             <div class="visual-placeholder">
                 <h4 align="center">System Architecture Diagram</h4>
-                <img src="medias/system architecture.png" alt="System Architecture Diagram" width="100%">
+                <img src="{{ url_for('static', filename='medias/system architecture.png') }}" alt="System Architecture Diagram" width="100%">
             </div>
             <div class="visual-placeholder">
                 <h4 align="center">Use Case Diagram</h4>
-                <img src="medias/use case.png" alt="Use Case Diagram" width="100%">
+                <img src="{{ url_for('static', filename='medias/use case.png') }}" alt="Use Case Diagram" width="100%">
             </div>
             <div class="visual-placeholder">
                 <h4 align="center">Activity Diagram</h4>
-                <img src="medias/activity diagram.png" alt="Activity Diagram" width="100%">
+                <img src="{{ url_for('static', filename='medias/activity diagram.png') }}" alt="Activity Diagram" width="100%">
             </div>
             <div class="visual-placeholder">
                 <h4 align="center">System Flow Diagram</h4>
-                <img src="medias/system flow.png" alt="System Flow Diagram" width="100%">
+                <img src="{{ url_for('static', filename='medias/system flow.png') }}" alt="System Flow Diagram" width="100%">
             </div>
         </section>  
 
@@ -334,7 +331,7 @@
             </ul>
             
             <h3>Evaluation</h3>
-            <img src="medias/evaluation.png" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/evaluation.png') }}" alt="Model Evaluation Results" width="100%">
             <p class="alignment">The accuracy plot demonstrates a clear upward trend for both training and validation datasets over
 50 epochs. Initially, the model showed rapid improvement, reaching over 90% accuracy by epoch
 15. From epochs 20 to 50, both curves stabilize above 95%, indicating consistent learning with no
@@ -446,7 +443,7 @@ DB_PORT=5432</code></pre>
 
             <h3>1. Homepage: Creating a Welcoming Digital Environment</h3>
             <p class="alignment">The Homepage serves as the initial point of interaction, offering a welcoming and emotionally sensitive interface tailored for students. It emphasizes clarity, accessibility, and visual calmness to ensure users—especially those in distress—can navigate comfortably.</p>
-            <img src="medias/Gif/Homepage - Emotion Aware Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Homepage - Emotion Aware Support System.gif') }}" alt="Homepage Demo GIF" width="100%">
             <h4>Key Highlights:</h4>
             <ul>
                 <li><strong>Emotionally Aligned Aesthetics:</strong> Incorporates a soft, calming color palette and an emotionally resonant background (image or video) to create a safe and supportive atmosphere. The design principles prioritize psychological comfort and visual accessibility.</li>
@@ -458,7 +455,7 @@ DB_PORT=5432</code></pre>
 
             <h3>2. Registration Page: Secure and User-Friendly Onboarding</h3>
             <p class="alignment">The Registration Page provides a secure and structured process for new users to create an account. It simplifies onboarding through a well-designed form layout and real-time user feedback, ensuring that the initial interaction with the system is positive and confidence-building.</p>
-            <img src="medias/Gif/Registration Page - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Registration Page - Emotion Aware AI Support System.gif') }}" alt="Registration Page Demo GIF" width="100%">
             <h4>Core Features:</h4>
             <ul>
                 <li><strong>Comprehensive Form Fields:</strong> Students are required to provide key academic and personal details, including Full Name, Student ID, AIU Email, Department, Academic Year, Gender, Phone Number, and upload a Profile Picture. This comprehensive approach ensures proper identification and personalization while maintaining necessary institutional connectivity.</li>
@@ -471,7 +468,7 @@ DB_PORT=5432</code></pre>
             <h3>3. Login Page and Student Dashboard: Secure Access and Personalized Experience</h3>
             <p class="alignment">The Login Page and Student Dashboard together form the core of the user's personalized experience within the Emotion-Aware AI Support System. These modules ensure secure access, emotional transparency, and intuitive navigation across all system features.</p>
 
-            <img src="medias/Gif/Login and Dashboard - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Login and Dashboard - Emotion Aware AI Support System.gif') }}" alt="Login and Dashboard Demo GIF" width="100%">
 
             <h4>Login Page</h4>
             <p class="alignment">The Login Page provides a clean, secure, and efficient authentication mechanism for both students and administrators. Built with simplicity and responsiveness in mind, it ensures smooth access while maintaining a professional aesthetic.</p>
@@ -499,7 +496,7 @@ DB_PORT=5432</code></pre>
             <h3>4. User Profile Management: Personalized and Secure Information Control</h3>
             <p class="alignment">The User Profile Management feature allows students to maintain and update their personal and academic information securely. It ensures that the platform stays aligned with the user's current data while providing a personalized experience throughout their interaction with the system.</p>
 
-            <img src="medias/Gif/Profile - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Profile - Emotion Aware AI Support System.gif') }}" alt="Profile Management Demo GIF" width="100%">
 
             <h4>Key Features:</h4>
             <ul>
@@ -511,7 +508,7 @@ DB_PORT=5432</code></pre>
             <h3>5. Emotion-Aware Complaint Interface: AI-Powered Empathy</h3>
             <p class="alignment">This is the core innovation of the system — an intelligent interface that interprets the emotional state of a student through their voice input. By leveraging a CNN-based speech emotion recognition model, the system classifies and prioritizes complaints with empathy and precision, ensuring that student distress is properly identified and addressed.</p>
             
-           <img src="medias/Gif/Chatbot - Emotion Aware AI Support System.gif" alt="" width="100%">
+           <img src="{{ url_for('static', filename='medias/Gif/Chatbot - Emotion Aware AI Support System.gif') }}" alt="Chatbot Demo GIF" width="100%">
 
             <h4>Key Features:</h4>
             <ul>
@@ -530,7 +527,7 @@ DB_PORT=5432</code></pre>
             <h3>6. Complaint Status and Withdraw Complaints</h3>
             <p class="alignment">The Complaint Submission & Status module empowers students to file grievances in their own voice and keep track of their resolution in a transparent and structured format. It ensures that users are always informed about the progress of their submissions while maintaining complete visibility into the complaint lifecycle.</p>
 
-            <img src="medias/Gif/Complaints - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Complaints - Emotion Aware AI Support System.gif') }}" alt="Complaints Management Demo GIF" width="100%">
 
             <h4>Key Features:</h4>
             <ul>
@@ -549,7 +546,7 @@ DB_PORT=5432</code></pre>
             <h3>1. Admin Login and Dashboard: Command Center for Crisis Management</h3>
             <p class="alignment">The Admin Login and Dashboard module serves as the command center for system administrators, offering both secure access and comprehensive monitoring tools. It ensures only authorized personnel can view and manage sensitive complaint and emotional data.</p>
 
-            <img src="medias/Gif/Admin Login and Dashboard - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Admin Login and Dashboard - Emotion Aware AI Support System.gif') }}" alt="Admin Login and Dashboard Demo GIF" width="100%">
 
             <h4>Admin Login</h4>
             <p class="alignment">The administrative login interface prioritizes security while maintaining simplicity for efficient access during critical situations.</p>
@@ -575,7 +572,7 @@ DB_PORT=5432</code></pre>
             <h3>2. Complaints Management: Operational Backbone for Student Support</h3>
             <p class="alignment">The Complaints Management page serves as the operational backbone for admins to oversee student submissions and maintain an up-to-date resolution workflow. This comprehensive interface ensures systematic handling of all student concerns.</p>
 
-            <img src="medias/Gif/Complaints Management - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Complaints Management - Emotion Aware AI Support System.gif') }}" alt="Admin Complaints Management Demo GIF" width="100%">
 
             <h4>Key Features:</h4>
             <ul>
@@ -592,7 +589,7 @@ DB_PORT=5432</code></pre>
              <h3>3. Sending Replies: Empathetic Administrative Communication</h3>
             <p class="alignment">The "Sending Replies" feature empowers administrative users and support staff to respond directly to student complaints through the platform in a structured, efficient, and empathetic manner. It ensures that emotional concerns raised via the voice-based system are met with timely human feedback and personalized support.</p>
 
-            <img src="medias/Gif/Sending Replies - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Sending Replies - Emotion Aware AI Support System.gif') }}" alt="Admin Sending Replies Demo GIF" width="100%">
 
             <h4>🔹 Key Functionalities:</h4>
             <ul>
@@ -606,7 +603,7 @@ DB_PORT=5432</code></pre>
             <h3>4. Alerts & Notifications: Real-Time Crisis Response System</h3>
             <p class="alignment">This section serves as the real-time alert center of the system, surfacing emotionally critical incidents and complaint escalations for quick administrative response. The notification system acts as an early warning system for potential student crises.</p>
 
-            <img src="medias/Gif/Notification - Emotion Aware AI Support System.gif" alt="" width="100%">
+            <img src="{{ url_for('static', filename='medias/Gif/Notification - Emotion Aware AI Support System.gif') }}" alt="Notification System Demo GIF" width="100%">
 
             <h4>Key Features:</h4>
             <ul>
