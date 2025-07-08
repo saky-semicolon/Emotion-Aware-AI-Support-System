@@ -2,5 +2,13 @@ from app import create_app
 
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(port=5016)
+if __name__ == "__main__":
+    app.run()
+
+
+# from app import create_app
+
+# app = create_app()
+
+# if __name__ == '__main__':
+#     app.run(port=5016)

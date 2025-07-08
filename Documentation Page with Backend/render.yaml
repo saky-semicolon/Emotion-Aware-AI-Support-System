@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: emotion-aware-ai-support-system
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn run:app"
+    plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
