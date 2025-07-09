@@ -6,14 +6,14 @@ This folder contains the full documentation, visuals, UI/GIFs, and source files 
 
 ### 📂 Structure
 
-Documentation Page/
-├── app/ # Flask app with feedback model
-├── templates/ # Jinja HTML templates (index.html)
-├── static/ # JS, CSS files
-├── medias/ # Diagrams, GIFs, and images
-├── run.py # Entry point
-├── requirements.txt # Dependencies
-└── README.md # This file
+    Documentation Page/
+    ├── app/ # Flask app with feedback model
+    ├── templates/ # Jinja HTML templates (index.html)
+    ├── static/ # JS, CSS files
+    ├── medias/ # Diagrams, GIFs, and images
+    ├── run.py # Entry point
+    ├── requirements.txt # Dependencies
+    └── README.md # This file
 
 
 ### 🚀 Features
