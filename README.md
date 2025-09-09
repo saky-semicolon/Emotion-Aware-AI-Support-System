@@ -139,4 +139,4 @@ subject to the following conditions:
 - **Rania Kherba**
 - **Ahmed Dugje Kadiri**
 
-> ⭐ Star this repo to support the project and inspire more emotion-aware AI systems for social impact!
+> ⭐ Star this repo to support the project and inspire more emotion-aware AI systems for social impact!!
